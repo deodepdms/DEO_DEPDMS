@@ -283,6 +283,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @media(max-width:860px){.sidebar{display:none;}.role-grid{grid-template-columns:1fr 1fr;}.role-card.admin-card{grid-column:1/-1;}}
 @media(max-width:520px){.role-grid{grid-template-columns:1fr;}}
 </style>
@@ -531,6 +532,9 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
       <div class="tab" onclick="tryGoTab('mor-dsd')" id="tab-mor-dsd">MOR-DSD</div>
       <div class="tab" onclick="tryGoTab('export')" id="tab-export">⬇ Export</div>
       <div class="tab" onclick="tryGoTab('audit')" id="tab-audit">📋 Audit Log</div>
+      <div style="margin-left:auto;display:flex;align-items:center;padding:0 14px;">
+        <button onclick="refreshPage()" title="Refresh data (stays logged in)" id="refresh-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:15px;padding:4px 10px;line-height:1;transition:all .15s;display:flex;align-items:center;gap:5px;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'"><span id="refresh-icon">↻</span></button>
+      </div>
     </div>
   </div>
 
@@ -1053,6 +1057,11 @@ function enterSession(username, user) {
   // Set active session
   currentUser = { username, ...user };
 
+  // Persist session so page refresh doesn't log out
+  try {
+    sessionStorage.setItem('depdms_session', JSON.stringify({ username, user }));
+  } catch(e) {}
+
   // Hide login, show app
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
@@ -1103,6 +1112,8 @@ function enterSession(username, user) {
 }
 
 function doLogout() {
+  // Clear persisted session
+  try { sessionStorage.removeItem('depdms_session'); } catch(e) {}
   // Auto-save current period data before logging out
   if (currentUser && _currentPeriodKey) {
     saveAllSectionsLocal(_currentPeriodKey);
@@ -2373,8 +2384,50 @@ async function doSignUp() {
 loadSignupsFromGS();
 
 // ═══════════════════════════════════════════════
-// ── CHANGE PASSWORD ──────────────────────────────
+// ── SESSION RESTORE & REFRESH ────────────────────
 // ═══════════════════════════════════════════════
+
+// Restore session on page refresh (stays logged in)
+(function restoreSession() {
+  try {
+    const saved = sessionStorage.getItem('depdms_session');
+    if (!saved) return;
+    const { username, user } = JSON.parse(saved);
+    if (!username || !user) return;
+    // Re-apply signups first so USER_DB is populated
+    loadSignupsFromGS().then(() => {
+      // Merge back the user object with latest USER_DB data
+      const freshUser = USER_DB[username];
+      const mergedUser = freshUser ? { ...user, pwHash: freshUser.pwHash, email: freshUser.email } : user;
+      enterSession(username, mergedUser);
+    });
+  } catch(e) {}
+})();
+
+// Refresh: reload GS data without logging out
+function refreshPage() {
+  if (!currentUser) return;
+  const icon = document.getElementById('refresh-icon');
+  if (icon) icon.style.animation = 'spin .7s linear infinite';
+  setSyncStatus('syncing');
+  loadSignupsFromGS().then(() => {
+    loadFormDataGS().then(() => {
+      if (icon) icon.style.animation = '';
+    });
+  });
+  // Also reload audit log silently
+  if (GS_URL) {
+    gsCall('getAuditLog').then(res => {
+      if (res?.ok && Array.isArray(res.data)) {
+        auditLog = res.data;
+        updateLogStats();
+        renderLog();
+      }
+    }).catch(() => {});
+  }
+}
+
+
 
 function toggleCpwVis(inputId, btnId) {
   const inp = document.getElementById(inputId);
