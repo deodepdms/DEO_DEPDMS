@@ -209,6 +209,9 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .log-table tbody tr:hover{background:rgba(255,255,255,.025);}
 .log-table tbody td{padding:9px 12px;vertical-align:middle;}
 .log-table tbody tr:last-child{border-bottom:none;}
+.log-del-btn{background:none;border:none;color:var(--danger);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .15s,background .15s;line-height:1;}
+.log-table tbody tr:hover .log-del-btn{opacity:.6;}
+.log-del-btn:hover{opacity:1!important;background:rgba(218,54,51,.12);}
 .log-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
 .log-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;white-space:nowrap;}
 .log-badge.lb-login{background:rgba(31,111,235,.15);color:#58a6ff;border:1px solid rgba(31,111,235,.3);}
@@ -364,7 +367,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
         <div class="fp-info-box">Select your account. A <strong>6-digit verification code</strong> will be sent to your registered Gmail address.</div>
         <div class="login-field">
           <label>Department</label>
-          <select id="fp-dept">
+          <select id="fp-dept" onchange="onFpDeptChange()">
             <option value="">— Select department —</option>
             <option value="finance">Finance Department</option>
             <option value="tsd">Technical Services Department (TSD)</option>
@@ -374,7 +377,9 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
         </div>
         <div class="login-field">
           <label>Username</label>
-          <input type="text" id="fp-username" placeholder="Type your username" autocomplete="off">
+          <select id="fp-username" disabled>
+            <option value="">— Select department first —</option>
+          </select>
         </div>
         <button class="login-btn" onclick="fpSendOtp()" id="fp-send-btn">Send Verification Code →</button>
       </div>
@@ -382,8 +387,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
       <!-- Step 2: Enter OTP -->
       <div class="fp-step" id="fp-step2">
         <div class="fp-info-box">
-          A 6-digit code was sent to <strong id="fp-email-hint">your email</strong>
-          (<span id="fp-step2-username" style="font-family:'DM Mono',monospace;color:var(--accent);"></span>).<br>
+          A 6-digit code was sent to <strong id="fp-email-hint">your email</strong>.<br>
           It expires in <strong id="fp-otp-timer" style="font-family:'DM Mono',monospace;">5:00</strong>. Check your spam folder if you don't see it.
         </div>
         <!-- Shown only when email sending fails -->
@@ -791,6 +795,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
               <th>User / Account</th>
               <th>Department</th>
               <th>Details</th>
+              <th style="width:36px"></th>
             </tr>
           </thead>
           <tbody id="log-tbody"></tbody>
@@ -849,7 +854,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
         <table class="uman-table">
           <thead>
             <tr>
-              <th>#</th><th>Username</th><th>Full Name</th><th>Department</th><th>Role</th><th>Gmail</th><th>Password</th><th>Source</th><th>Action</th>
+              <th>#</th><th>Username</th><th>Full Name</th><th>Department</th><th>Role</th><th>Password</th><th>Source</th><th>Action</th>
             </tr>
           </thead>
           <tbody id="uman-tbody"></tbody>
@@ -1213,11 +1218,11 @@ function renderLog() {
   );
 
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="log-empty">No log entries match the current filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="log-empty">No log entries match the current filter.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = rows.map((e,i) => `
+  tbody.innerHTML = rows.map((e) => `
     <tr>
       <td class="log-time">${e.ts}</td>
       <td><span class="log-badge ${LOG_BADGE_CLASS[e.type]||'lb-login'}">${LOG_ICON[e.type]||''} ${e.type}</span></td>
@@ -1227,8 +1232,17 @@ function renderLog() {
       </td>
       <td class="log-dept" style="font-size:11px;">${escHtml(e.dept)}</td>
       <td class="log-detail">${escHtml(e.detail)}</td>
+      <td><button class="log-del-btn" onclick="deleteLogEntry(${e.tsRaw},'${escHtml(e.username)}','${escHtml(e.type)}')" title="Delete this entry">✕</button></td>
     </tr>
   `).join('');
+}
+
+function deleteLogEntry(tsRaw, username, type) {
+  auditLog = auditLog.filter(e => !(e.tsRaw === tsRaw && e.username === username && e.type === type));
+  updateLogStats();
+  renderLog();
+  // Sync deletion to GS silently
+  if (GS_URL) gsCall('saveAuditLog', { data: auditLog.slice(0, 500) }).catch(()=>{});
 }
 
 function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1659,25 +1673,26 @@ function getSignups() {
 }
 function saveSignups(arr) {
   localStorage.setItem('depdms_signups', JSON.stringify(arr));
-  // Push to Google Sheets silently — don't affect the main sync status indicator
+  // Also push to Google Sheets
   if (GS_URL) {
+    setSyncStatus('syncing');
     gsCall('saveSignups', { data: arr })
-      .catch(e => console.warn('saveSignups GS error:', e));
+      .then(r => setSyncStatus(r?.ok ? 'ok' : 'error'))
+      .catch(() => setSyncStatus('error'));
   }
 }
 
-// Load signups — try Google Sheets first, fall back to localStorage (silent — doesn't affect sync indicator)
+// Load signups — try Google Sheets first, fall back to localStorage
 async function loadSignupsFromGS() {
-  if (!GS_URL) { loadSignupsLocal(); return; }
-  try {
-    const res = await gsCall('getSignups');
-    if (res?.ok && Array.isArray(res.data)) {
-      localStorage.setItem('depdms_signups', JSON.stringify(res.data));
-      applySignupsToRuntime(res.data);
-    } else {
-      loadSignupsLocal();
-    }
-  } catch(e) {
+  if (!GS_URL) { loadSignupsLocal(); setSyncStatus('offline'); return; }
+  setSyncStatus('syncing');
+  const res = await gsCall('getSignups');
+  if (res?.ok && Array.isArray(res.data)) {
+    localStorage.setItem('depdms_signups', JSON.stringify(res.data));
+    setSyncStatus('ok');
+    applySignupsToRuntime(res.data);
+  } else {
+    setSyncStatus('error');
     loadSignupsLocal();
   }
 }
@@ -1921,10 +1936,8 @@ function _fpReset() {
   ['fp-otp','fp-pw','fp-pw2'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   ['fp-pw','fp-pw2'].forEach(id => { const el = document.getElementById(id); if(el) el.type = 'password'; });
   ['fp-pw-eye','fp-pw2-eye'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = '👁'; });
-  const uEl = document.getElementById('fp-username');
-  if (uEl) uEl.value = '';
-  const fallback = document.getElementById('fp-otp-fallback');
-  if (fallback) { fallback.style.display = 'none'; fallback.textContent = ''; }
+  const uSel = document.getElementById('fp-username');
+  if (uSel) { uSel.innerHTML = '<option value="">— Select department first —</option>'; uSel.disabled = true; }
   document.getElementById('fp-error').classList.remove('show');
   document.getElementById('fp-ok').classList.remove('show');
   _fpGoToStep(1);
@@ -1960,23 +1973,49 @@ function showFpOk(msg) {
   document.getElementById('fp-error').classList.remove('show');
 }
 
-function onFpDeptChange() { /* username is now free-text — no dropdown to update */ }
+function onFpDeptChange() {
+  const dept = document.getElementById('fp-dept').value;
+  const sel  = document.getElementById('fp-username');
+  sel.innerHTML = '';
+  document.getElementById('fp-error').classList.remove('show');
+  if (!dept) {
+    sel.innerHTML = '<option value="">— Select department first —</option>';
+    sel.disabled = true;
+    return;
+  }
+  // Only show signed-up accounts (they have a registered email)
+  const signups = getSignups();
+  const deptSignups = signups.filter(u => u.deptKey === dept && u.email);
+  if (deptSignups.length === 0) {
+    sel.innerHTML = '<option value="">— No registered accounts in this department —</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.innerHTML = '<option value="">— Select your username —</option>';
+  deptSignups.forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u.username;
+    opt.textContent = u.username;
+    sel.appendChild(opt);
+  });
+  sel.disabled = false;
+}
 
 // ── STEP 1: Send OTP to registered email ──
 async function fpSendOtp() {
-  const username = document.getElementById('fp-username').value.trim().toLowerCase();
+  const username = document.getElementById('fp-username').value.trim();
   const dept     = document.getElementById('fp-dept').value;
 
   document.getElementById('fp-error').classList.remove('show');
   document.getElementById('fp-ok').classList.remove('show');
 
   if (!dept)     return showFpErr('Please select your department.');
-  if (!username) return showFpErr('Please enter your username.');
+  if (!username) return showFpErr('Please select your username.');
 
   const btn = document.getElementById('fp-send-btn');
-  btn.disabled = true; btn.textContent = 'Searching account…';
+  btn.disabled = true; btn.textContent = 'Sending…';
 
-  // Always reload signups from GS so we get the latest email for any device
+  // Reload signups from GS to get latest email
   if (GS_URL) {
     const res = await gsCall('getSignups');
     if (res?.ok && Array.isArray(res.data)) {
@@ -1986,82 +2025,62 @@ async function fpSendOtp() {
   }
 
   const signups = getSignups();
-  // Check signups first, then fall back to built-in USER_DB (e.g. admin)
-  let user = signups.find(u => u.username === username);
-  if (!user && USER_DB[username]) {
-    const db = USER_DB[username];
-    user = {
-      username,
-      name:    db.name,
-      dept:    db.dept,
-      deptKey: db.deptKey,
-      role:    db.role,
-      email:   db.email || '',
-      source:  'built-in',
-    };
-  }
+  const user = signups.find(u => u.username === username);
 
   if (!user) {
     btn.disabled = false; btn.textContent = 'Send Verification Code →';
-    return showFpErr('Username "' + username + '" not found.');
-  }
-  if (user.deptKey && dept && user.deptKey !== dept) {
-    btn.disabled = false; btn.textContent = 'Send Verification Code →';
-    return showFpErr('Username "' + username + '" does not belong to the selected department.');
+    return showFpErr('Account not found. Only signed-up accounts can reset their password.');
   }
   if (!user.email) {
     btn.disabled = false; btn.textContent = 'Send Verification Code →';
-    return showFpErr('No Gmail registered for "' + username + '". Please ask the admin to set your Gmail in User Management.');
+    return showFpErr('No email registered for this account. Please contact the admin to reset your password.');
   }
-
-  btn.textContent = 'Sending…';
 
   // Generate 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  _fpOtpCode   = otp;
-  _fpOtpExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes
+  _fpOtpCode    = otp;
+  _fpOtpExpiry  = Date.now() + 5 * 60 * 1000; // 5 minutes
 
-  try {
-    // Send OTP via Google Apps Script
-    const res = await gsCall('sendOtp', {
-      email:    user.email,
-      username: user.username || username,
-      name:     user.name    || username,
-      otp:      otp,
-    });
+  // Send OTP via Google Apps Script
+  const res = await gsCall('sendOtp', {
+    email:    user.email,
+    username: user.username,
+    name:     user.name,
+    otp:      otp,
+  });
 
-    btn.disabled = false; btn.textContent = 'Send Verification Code →';
+  btn.disabled = false; btn.textContent = 'Send Verification Code →';
 
-    const emailVal = user.email || '';
-    const masked   = emailVal.replace(/^(.).+(@.+)$/, (_, a, b) => a + '***' + b) || emailVal;
-
-    // Always switch to step 2 regardless of whether email succeeded
+  if (!res?.ok) {
+    // Email failed — show OTP directly on screen as fallback
+    // This happens when Apps Script MailApp isn't authorized yet
+    const masked = user.email.replace(/^(.).+(@.+)$/, (_, a, b) => a + '***' + b);
+    document.getElementById('fp-email-hint').textContent = masked + ' (email failed — code shown below)';
+    document.getElementById('fp-step2-username').textContent = username;
     _fpVerifiedUsername = username;
-    const hintEl = document.getElementById('fp-email-hint');
-    const userEl = document.getElementById('fp-step2-username');
-    if (hintEl) hintEl.textContent = masked;
-    if (userEl) userEl.textContent = username;
     _fpStartOtpTimer();
     _fpGoToStep(2);
-
-    // If email failed, show code on screen as fallback
-    if (!res?.ok) {
-      const fallback = document.getElementById('fp-otp-fallback');
-      if (fallback) {
-        fallback.style.display = 'block';
-        fallback.textContent   = '⚠ Email not sent. Your code is: ' + otp;
-      }
-      if (hintEl) hintEl.textContent = masked + ' (email failed)';
-      addLogAnon('SAVE', 'OTP shown on-screen (email failed) for "' + username + '"', username, user.name || username, user.dept || '');
-    } else {
-      addLogAnon('SAVE', 'OTP sent to "' + masked + '" for "' + username + '"', username, user.name || username, user.dept || '');
+    // Show OTP on screen as fallback
+    const otpHint = document.getElementById('fp-otp-fallback');
+    if (otpHint) {
+      otpHint.style.display = 'block';
+      otpHint.textContent = '⚠ Email could not be sent. Your verification code is: ' + otp;
     }
-
-  } catch (err) {
-    btn.disabled = false; btn.textContent = 'Send Verification Code →';
-    showFpErr('Something went wrong: ' + err.message);
-    console.error('fpSendOtp error:', err);
+    addLogAnon('SAVE', 'OTP shown on-screen (email failed) for account "' + username + '"', username, user.name, user.dept);
+    return;
   }
+
+  // Mask the email for display: j***@gmail.com
+  const masked = user.email.replace(/^(.).+(@.+)$/, (_, a, b) => a + '***' + b);
+  document.getElementById('fp-email-hint').textContent = masked;
+  document.getElementById('fp-step2-username').textContent = username;
+
+  // Start 5-minute countdown
+  _fpVerifiedUsername = username; // store for step 2
+  _fpStartOtpTimer();
+
+  _fpGoToStep(2);
+  addLogAnon('SAVE', 'Password reset OTP sent to "' + masked + '" for account "' + username + '"', username, user.name, user.dept);
 }
 
 let _fpTimerInterval = null;
@@ -2132,35 +2151,24 @@ async function fpResetPassword() {
   btn.disabled = true; btn.textContent = 'Saving…';
 
   const newHash = await sha256(pw);
-
-  // Update runtime USER_DB always
-  if (USER_DB[_fpVerifiedUsername]) USER_DB[_fpVerifiedUsername].pwHash = newHash;
-
   const signups = getSignups();
   const idx = signups.findIndex(u => u.username === _fpVerifiedUsername);
 
-  if (idx !== -1) {
-    // Signed-up user — update signups array
-    signups[idx].pwHash   = newHash;
-    signups[idx].password = pw;
-    saveSignups(signups);
-    addLogAnon('SAVE',
-      'Password reset via OTP for "' + _fpVerifiedUsername + '" · Dept: ' + signups[idx].dept,
-      _fpVerifiedUsername, signups[idx].name, signups[idx].dept
-    );
-  } else {
-    // Built-in account (admin) — save new hash to localStorage
-    try {
-      const builtinPws = JSON.parse(localStorage.getItem('depdms_builtin_pws') || '{}');
-      builtinPws[_fpVerifiedUsername] = { pwHash: newHash, password: pw };
-      localStorage.setItem('depdms_builtin_pws', JSON.stringify(builtinPws));
-    } catch(e) {}
-    const dbUser = USER_DB[_fpVerifiedUsername];
-    addLogAnon('SAVE',
-      'Password reset via OTP for built-in account "' + _fpVerifiedUsername + '"',
-      _fpVerifiedUsername, dbUser?.name || _fpVerifiedUsername, dbUser?.dept || 'Administration'
-    );
+  if (idx === -1) {
+    btn.disabled = false; btn.textContent = 'Reset Password ✓';
+    return showFpErr('Account not found. Please contact the admin.');
   }
+
+  signups[idx].pwHash   = newHash;
+  signups[idx].password = pw;
+  saveSignups(signups);
+
+  if (USER_DB[_fpVerifiedUsername]) USER_DB[_fpVerifiedUsername].pwHash = newHash;
+
+  addLogAnon('SAVE',
+    'Password successfully reset via OTP for account "' + _fpVerifiedUsername + '" · Dept: ' + signups[idx].dept,
+    _fpVerifiedUsername, signups[idx].name, signups[idx].dept
+  );
 
   btn.disabled = false; btn.textContent = 'Reset Password ✓';
   showFpOk('Password reset successfully! Redirecting to sign in…');
@@ -2275,24 +2283,11 @@ async function doSignUp() {
   if (!DEPT_USERS[dept].includes(username)) DEPT_USERS[dept].push(username);
   USER_LABELS[username] = name;
 
-  // Send welcome email (non-blocking — don't wait for it)
-  if (GS_URL) {
-    gsCall('sendWelcome', {
-      email,
-      name,
-      username,
-      dept: newUser.dept,
-      role: ROLE_CONFIG[role]?.label || role,
-    }).then(res => {
-      if (!res?.ok) console.warn('Welcome email failed:', res?.error);
-    });
-  }
-
   addLogAnon('LOGIN', 'New account created via Sign Up: "' + name + '" · Username: ' + username + ' · Dept: ' + newUser.dept, username, name, newUser.dept);
   renderLog();
 
   btn.disabled = false; btn.textContent = 'Create Account ✓';
-  showSignupOk('Account created! A welcome email has been sent to ' + email + '.');
+  showSignupOk('Account created! You can now sign in as "' + username + '".');
 
   document.getElementById('su-name').value     = '';
   document.getElementById('su-username').value = '';
@@ -2301,18 +2296,6 @@ async function doSignUp() {
   document.getElementById('su-pw2').value      = '';
   document.getElementById('su-dept').value     = '';
 }
-
-// Load saved built-in account emails and passwords (set by admin)
-try {
-  const builtinEmails = JSON.parse(localStorage.getItem('depdms_builtin_emails') || '{}');
-  Object.entries(builtinEmails).forEach(([username, email]) => {
-    if (USER_DB[username]) USER_DB[username].email = email;
-  });
-  const builtinPws = JSON.parse(localStorage.getItem('depdms_builtin_pws') || '{}');
-  Object.entries(builtinPws).forEach(([username, data]) => {
-    if (USER_DB[username]) USER_DB[username].pwHash = data.pwHash;
-  });
-} catch(e) {}
 
 // Load signed-up users on page load (GS first, then localStorage fallback)
 loadSignupsFromGS();
@@ -2378,7 +2361,10 @@ async function doChangePassword() {
 
 // Built-in plain-text credentials for admin reference
 const BUILTIN_PW = {
-  'admin': 'zameco2025',
+  'finance.head':'finance@2025','finance.encoder':'encode2025',
+  'tsd.engineer':'tsd@2025','tsd.encoder':'encode2025',
+  'pt.analyst':'power@2025','pt.encoder':'encode2025','pt.wheeling':'power@2025',
+  'admin':'zameco2025','admin.csd':'zameco2025',
 };
 
 function getAllUsers() {
@@ -2393,7 +2379,6 @@ function getAllUsers() {
       name: USER_DB[k].name,
       dept: USER_DB[k].dept,
       role: USER_DB[k].role,
-      email: USER_DB[k].email || '',
       password: BUILTIN_PW[k] || '(built-in)',
       source: 'built-in',
     }));
@@ -2403,7 +2388,6 @@ function getAllUsers() {
     name: u.name,
     dept: u.dept,
     role: u.role,
-    email: u.email || '',
     password: u.password,
     source: 'signup',
   }));
@@ -2446,19 +2430,11 @@ async function _renderUserTableFromGS() {
   }
 
   tbody.innerHTML = users.map((u, i) => {
-    const safePw    = escHtml(u.password || '');
-    const safeEmail = escHtml(u.email || '');
+    const safePw = escHtml(u.password || '');
     const roleLabel = (ROLE_CONFIG[u.role]?.label) || u.role;
     const sourceBadge = u.source === 'signup'
       ? '<span class="uman-source-badge signed-up">Signed Up</span>'
       : '<span class="uman-source-badge built-in">Built-in</span>';
-    const emailCell = (u.source === 'signup' || u.source === 'built-in')
-      ? (u.email
-          ? '<span style="font-size:11px;color:var(--accent2);">✓ ' + safeEmail + '</span>'
-            + ' <button onclick="adminSetEmail(\'' + escHtml(u.username) + '\',\'' + safeEmail + '\')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;padding:0 4px;" title="Edit email">✏️</button>'
-          : '<span style="color:var(--danger);font-size:11px;">⚠ No email</span>'
-            + ' <button onclick="adminSetEmail(\'' + escHtml(u.username) + '\',\'\')" style="background:none;border:1px solid var(--accent);color:var(--accent);border-radius:4px;cursor:pointer;font-size:10px;padding:2px 7px;margin-left:4px;">+ Add</button>')
-      : '<span style="color:var(--muted);font-size:10px;">—</span>';
     const deleteBtn = u.source === 'signup'
       ? '<button class="uman-delete-btn" onclick="deleteSignupUser(\'' + escHtml(u.username) + '\')">🗑 Delete</button>'
       : '<span style="color:var(--muted);font-size:10px">—</span>';
@@ -2470,7 +2446,6 @@ async function _renderUserTableFromGS() {
       '<td>' + escHtml(u.name) + '</td>',
       '<td style="font-size:11px;color:var(--muted);">' + escHtml(u.dept) + '</td>',
       '<td style="font-size:11px;">' + escHtml(roleLabel) + '</td>',
-      '<td>' + emailCell + '</td>',
       '<td class="uman-pw-cell">',
         '<span class="uman-pw-mask" id="pw-mask-' + i + '" onclick="revealPw(' + i + ')" title="Click to reveal">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</span>',
         '<span class="uman-pw-reveal" id="pw-rev-' + i + '" style="display:none;">' + safePw + '</span>',
@@ -2505,42 +2480,6 @@ function deleteSignupUser(username) {
   addLog('SAVE', 'Admin deleted signed-up user "' + username + '"');
   renderLog();
   renderUserTable();
-}
-
-function adminSetEmail(username, currentEmail) {
-  const newEmail = prompt(
-    'Set Gmail address for "' + username + '":\n(This will be used for password reset)',
-    currentEmail || ''
-  );
-  if (newEmail === null) return; // cancelled
-  const trimmed = newEmail.trim().toLowerCase();
-  if (trimmed && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed)) {
-    alert('Invalid email address. Please enter a valid Gmail.');
-    return;
-  }
-
-  // Update runtime USER_DB (works for built-in AND signup accounts)
-  if (USER_DB[username]) USER_DB[username].email = trimmed;
-
-  // For signup accounts — also update localStorage + GS
-  const signups = getSignups();
-  const idx = signups.findIndex(u => u.username === username);
-  if (idx !== -1) {
-    signups[idx].email = trimmed;
-    saveSignups(signups);
-  } else {
-    // Built-in account — save email to a separate localStorage key
-    try {
-      const builtinEmails = JSON.parse(localStorage.getItem('depdms_builtin_emails') || '{}');
-      builtinEmails[username] = trimmed;
-      localStorage.setItem('depdms_builtin_emails', JSON.stringify(builtinEmails));
-    } catch(e) {}
-  }
-
-  addLog('SAVE', 'Admin updated Gmail for "' + username + '" → ' + (trimmed || '(cleared)'));
-  renderLog();
-  renderUserTable();
-  alert('✓ Gmail updated for "' + username + '"' + (trimmed ? ': ' + trimmed : ' (cleared)'));
 }
 
 </script>
