@@ -364,7 +364,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
         <div class="fp-info-box">Select your account. A <strong>6-digit verification code</strong> will be sent to your registered Gmail address.</div>
         <div class="login-field">
           <label>Department</label>
-          <select id="fp-dept" onchange="onFpDeptChange()">
+          <select id="fp-dept">
             <option value="">— Select department —</option>
             <option value="finance">Finance Department</option>
             <option value="tsd">Technical Services Department (TSD)</option>
@@ -374,9 +374,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
         </div>
         <div class="login-field">
           <label>Username</label>
-          <select id="fp-username" disabled>
-            <option value="">— Select department first —</option>
-          </select>
+          <input type="text" id="fp-username" placeholder="Type your username" autocomplete="off">
         </div>
         <button class="login-btn" onclick="fpSendOtp()" id="fp-send-btn">Send Verification Code →</button>
       </div>
@@ -1923,8 +1921,8 @@ function _fpReset() {
   ['fp-otp','fp-pw','fp-pw2'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   ['fp-pw','fp-pw2'].forEach(id => { const el = document.getElementById(id); if(el) el.type = 'password'; });
   ['fp-pw-eye','fp-pw2-eye'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = '👁'; });
-  const uSel = document.getElementById('fp-username');
-  if (uSel) { uSel.innerHTML = '<option value="">— Select department first —</option>'; uSel.disabled = true; }
+  const uEl = document.getElementById('fp-username');
+  if (uEl) uEl.value = '';
   document.getElementById('fp-error').classList.remove('show');
   document.getElementById('fp-ok').classList.remove('show');
   _fpGoToStep(1);
@@ -1960,49 +1958,23 @@ function showFpOk(msg) {
   document.getElementById('fp-error').classList.remove('show');
 }
 
-function onFpDeptChange() {
-  const dept = document.getElementById('fp-dept').value;
-  const sel  = document.getElementById('fp-username');
-  sel.innerHTML = '';
-  document.getElementById('fp-error').classList.remove('show');
-  if (!dept) {
-    sel.innerHTML = '<option value="">— Select department first —</option>';
-    sel.disabled = true;
-    return;
-  }
-  // Only show signed-up accounts (they have a registered email)
-  const signups = getSignups();
-  const deptSignups = signups.filter(u => u.deptKey === dept && u.email);
-  if (deptSignups.length === 0) {
-    sel.innerHTML = '<option value="">— No registered accounts in this department —</option>';
-    sel.disabled = true;
-    return;
-  }
-  sel.innerHTML = '<option value="">— Select your username —</option>';
-  deptSignups.forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u.username;
-    opt.textContent = u.username;
-    sel.appendChild(opt);
-  });
-  sel.disabled = false;
-}
+function onFpDeptChange() { /* username is now free-text — no dropdown to update */ }
 
 // ── STEP 1: Send OTP to registered email ──
 async function fpSendOtp() {
-  const username = document.getElementById('fp-username').value.trim();
+  const username = document.getElementById('fp-username').value.trim().toLowerCase();
   const dept     = document.getElementById('fp-dept').value;
 
   document.getElementById('fp-error').classList.remove('show');
   document.getElementById('fp-ok').classList.remove('show');
 
   if (!dept)     return showFpErr('Please select your department.');
-  if (!username) return showFpErr('Please select your username.');
+  if (!username) return showFpErr('Please enter your username.');
 
   const btn = document.getElementById('fp-send-btn');
-  btn.disabled = true; btn.textContent = 'Sending…';
+  btn.disabled = true; btn.textContent = 'Searching account…';
 
-  // Reload signups from GS to get latest email
+  // Always reload signups from GS so we get the latest email for any device
   if (GS_URL) {
     const res = await gsCall('getSignups');
     if (res?.ok && Array.isArray(res.data)) {
@@ -2016,12 +1988,18 @@ async function fpSendOtp() {
 
   if (!user) {
     btn.disabled = false; btn.textContent = 'Send Verification Code →';
-    return showFpErr('Account not found. Only signed-up accounts can reset their password.');
+    return showFpErr('Username "' + username + '" not found. Only signed-up accounts can reset their password.');
+  }
+  if (user.deptKey && dept && user.deptKey !== dept) {
+    btn.disabled = false; btn.textContent = 'Send Verification Code →';
+    return showFpErr('Username "' + username + '" does not belong to the selected department.');
   }
   if (!user.email) {
     btn.disabled = false; btn.textContent = 'Send Verification Code →';
-    return showFpErr('No email registered for this account. Please contact the admin to reset your password.');
+    return showFpErr('No Gmail registered for "' + username + '". Please sign up again with a Gmail address, or ask the admin to update your account.');
   }
+
+  btn.textContent = 'Sending…';
 
   // Generate 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
