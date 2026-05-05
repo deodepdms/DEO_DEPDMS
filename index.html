@@ -1616,7 +1616,7 @@ buildDSDTable();
 // To verify it works: paste the URL in a browser — you should see:
 //   {"ok":true,"message":"DEPDMS Backend is running."}
 // ══════════════════════════════════════════════════════════════
-const GS_URL = 'https://script.google.com/macros/s/AKfycbwYQfAvq0saHuXh_WzLzsyYCe3ImyI41OtQGV1-XkAUskEGFKNK3q6tcGcyLZ0w7yxpEg/exec';
+const GS_URL = 'https://script.google.com/macros/s/AKfycbx8yO4PFmcrupMTUzHWXDRtfjw9rDR_jO8YdrIRP_Udk9LeX5PCAHfJP0V4W-tDMdtFgw/exec';
 
 // Shows a small sync indicator in the UI
 function setSyncStatus(state) {
@@ -2272,11 +2272,24 @@ async function doSignUp() {
   if (!DEPT_USERS[dept].includes(username)) DEPT_USERS[dept].push(username);
   USER_LABELS[username] = name;
 
+  // Send welcome email (non-blocking — don't wait for it)
+  if (GS_URL) {
+    gsCall('sendWelcome', {
+      email,
+      name,
+      username,
+      dept: newUser.dept,
+      role: ROLE_CONFIG[role]?.label || role,
+    }).then(res => {
+      if (!res?.ok) console.warn('Welcome email failed:', res?.error);
+    });
+  }
+
   addLogAnon('LOGIN', 'New account created via Sign Up: "' + name + '" · Username: ' + username + ' · Dept: ' + newUser.dept, username, name, newUser.dept);
   renderLog();
 
   btn.disabled = false; btn.textContent = 'Create Account ✓';
-  showSignupOk('Account created! You can now sign in as "' + username + '".');
+  showSignupOk('Account created! A welcome email has been sent to ' + email + '.');
 
   document.getElementById('su-name').value     = '';
   document.getElementById('su-username').value = '';
