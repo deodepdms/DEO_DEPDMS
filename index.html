@@ -382,7 +382,8 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
       <!-- Step 2: Enter OTP -->
       <div class="fp-step" id="fp-step2">
         <div class="fp-info-box">
-          A 6-digit code was sent to <strong id="fp-email-hint">your email</strong>.<br>
+          A 6-digit code was sent to <strong id="fp-email-hint">your email</strong>
+          (<span id="fp-step2-username" style="font-family:'DM Mono',monospace;color:var(--accent);"></span>).<br>
           It expires in <strong id="fp-otp-timer" style="font-family:'DM Mono',monospace;">5:00</strong>. Check your spam folder if you don't see it.
         </div>
         <!-- Shown only when email sending fails -->
@@ -1923,6 +1924,8 @@ function _fpReset() {
   ['fp-pw-eye','fp-pw2-eye'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = '👁'; });
   const uEl = document.getElementById('fp-username');
   if (uEl) uEl.value = '';
+  const fallback = document.getElementById('fp-otp-fallback');
+  if (fallback) { fallback.style.display = 'none'; fallback.textContent = ''; }
   document.getElementById('fp-error').classList.remove('show');
   document.getElementById('fp-ok').classList.remove('show');
   _fpGoToStep(1);
