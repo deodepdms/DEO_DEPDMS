@@ -212,6 +212,13 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .log-del-btn{background:none;border:none;color:var(--danger);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .15s,background .15s;line-height:1;}
 .log-table tbody tr:hover .log-del-btn{opacity:.6;}
 .log-del-btn:hover{opacity:1!important;background:rgba(218,54,51,.12);}
+.log-cb{width:15px;height:15px;cursor:pointer;accent-color:var(--danger);}
+.log-table tbody tr.log-selected{background:rgba(218,54,51,.07)!important;}
+.log-table tbody tr.log-selected td{border-color:rgba(218,54,51,.15);}
+.del-selected-btn{padding:7px 14px;border-radius:6px;border:1px solid var(--danger);background:rgba(218,54,51,.1);color:var(--danger);cursor:pointer;font-size:11px;font-weight:700;font-family:'Sora',sans-serif;transition:all .15s;display:none;white-space:nowrap;}
+.del-selected-btn.visible{display:inline-flex;align-items:center;gap:5px;}
+.del-selected-btn:hover{background:rgba(218,54,51,.2);}
+.log-cb-head{width:15px;height:15px;cursor:pointer;accent-color:var(--danger);}
 .log-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
 .log-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;white-space:nowrap;}
 .log-badge.lb-login{background:rgba(31,111,235,.15);color:#58a6ff;border:1px solid rgba(31,111,235,.3);}
@@ -783,13 +790,15 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
         <button class="log-filter-btn" data-filter="SAVE" onclick="setLogFilter('SAVE')">Saves</button>
         <button class="log-filter-btn" data-filter="EXPORT" onclick="setLogFilter('EXPORT')">Exports</button>
         <button class="log-filter-btn" data-filter="FAIL" onclick="setLogFilter('FAIL')">Failures</button>
-        <button class="log-clear-btn" onclick="confirmClearLog()">🗑 Clear Log</button>
+        <button class="del-selected-btn" id="del-selected-btn" onclick="deleteSelectedEntries()">🗑 Delete Selected (<span id="del-selected-count">0</span>)</button>
+        <button class="log-clear-btn" onclick="confirmClearLog()">🗑 Clear All</button>
       </div>
 
       <div class="log-table-wrap">
         <table class="log-table">
           <thead>
             <tr>
+              <th style="width:32px;text-align:center;"><input type="checkbox" class="log-cb-head" id="log-cb-all" onclick="toggleSelectAll(this)" title="Select all"></th>
               <th style="width:150px">Timestamp</th>
               <th style="width:70px">Event</th>
               <th>User / Account</th>
@@ -1217,13 +1226,22 @@ function renderLog() {
     [e.username,e.name,e.dept,e.role,e.detail,e.type].some(v=>(v||'').toLowerCase().includes(search))
   );
 
+  // Reset select-all checkbox
+  const cbAll = document.getElementById('log-cb-all');
+  if (cbAll) cbAll.checked = false;
+  updateDelSelectedBtn();
+
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="log-empty">No log entries match the current filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="log-empty">No log entries match the current filter.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = rows.map((e) => `
-    <tr>
+  tbody.innerHTML = rows.map((e) => {
+    const key = e.tsRaw + '|' + e.username + '|' + e.type;
+    const safeKey = escHtml(key);
+    return `
+    <tr data-key="${safeKey}">
+      <td style="text-align:center;"><input type="checkbox" class="log-cb" data-key="${safeKey}" onchange="onLogCbChange()"></td>
       <td class="log-time">${e.ts}</td>
       <td><span class="log-badge ${LOG_BADGE_CLASS[e.type]||'lb-login'}">${LOG_ICON[e.type]||''} ${e.type}</span></td>
       <td>
@@ -1233,25 +1251,79 @@ function renderLog() {
       <td class="log-dept" style="font-size:11px;">${escHtml(e.dept)}</td>
       <td class="log-detail">${escHtml(e.detail)}</td>
       <td><button class="log-del-btn" onclick="deleteLogEntry(${e.tsRaw},'${escHtml(e.username)}','${escHtml(e.type)}')" title="Delete this entry">✕</button></td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
+}
+
+function onLogCbChange() {
+  // Highlight selected rows
+  document.querySelectorAll('#log-tbody tr').forEach(tr => {
+    const cb = tr.querySelector('.log-cb');
+    if (cb) tr.classList.toggle('log-selected', cb.checked);
+  });
+  // Update select-all state
+  const all = document.querySelectorAll('#log-tbody .log-cb');
+  const checked = document.querySelectorAll('#log-tbody .log-cb:checked');
+  const cbAll = document.getElementById('log-cb-all');
+  if (cbAll) {
+    cbAll.checked = all.length > 0 && checked.length === all.length;
+    cbAll.indeterminate = checked.length > 0 && checked.length < all.length;
+  }
+  updateDelSelectedBtn();
+}
+
+function toggleSelectAll(cbAll) {
+  document.querySelectorAll('#log-tbody .log-cb').forEach(cb => {
+    cb.checked = cbAll.checked;
+    cb.closest('tr').classList.toggle('log-selected', cbAll.checked);
+  });
+  updateDelSelectedBtn();
+}
+
+function updateDelSelectedBtn() {
+  const count = document.querySelectorAll('#log-tbody .log-cb:checked').length;
+  const btn = document.getElementById('del-selected-btn');
+  const cnt = document.getElementById('del-selected-count');
+  if (btn) btn.classList.toggle('visible', count > 0);
+  if (cnt) cnt.textContent = count;
+}
+
+function deleteSelectedEntries() {
+  const checked = document.querySelectorAll('#log-tbody .log-cb:checked');
+  if (checked.length === 0) return;
+  if (!confirm('Permanently delete ' + checked.length + ' selected log entr' + (checked.length === 1 ? 'y' : 'ies') + '? This cannot be undone.')) return;
+
+  const keysToDelete = new Set();
+  checked.forEach(cb => keysToDelete.add(cb.dataset.key));
+
+  auditLog = auditLog.filter(e => {
+    const key = e.tsRaw + '|' + e.username + '|' + e.type;
+    return !keysToDelete.has(key);
+  });
+
+  updateLogStats();
+  renderLog();
+  // Sync to GS permanently
+  if (GS_URL) gsCall('saveAuditLog', { data: auditLog.slice(0, 500) }).catch(()=>{});
 }
 
 function deleteLogEntry(tsRaw, username, type) {
+  if (!confirm('Permanently delete this log entry?')) return;
   auditLog = auditLog.filter(e => !(e.tsRaw === tsRaw && e.username === username && e.type === type));
   updateLogStats();
   renderLog();
-  // Sync deletion to GS silently
+  // Sync to GS permanently
   if (GS_URL) gsCall('saveAuditLog', { data: auditLog.slice(0, 500) }).catch(()=>{});
 }
 
 function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function confirmClearLog() {
-  if (confirm('Clear all audit log entries? This cannot be undone.')) {
+  if (confirm('Permanently delete ALL audit log entries? This cannot be undone.')) {
     auditLog = [];
     updateLogStats();
     renderLog();
+    if (GS_URL) gsCall('saveAuditLog', { data: [] }).catch(()=>{});
   }
 }
 
