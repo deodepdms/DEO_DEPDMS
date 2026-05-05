@@ -1659,26 +1659,25 @@ function getSignups() {
 }
 function saveSignups(arr) {
   localStorage.setItem('depdms_signups', JSON.stringify(arr));
-  // Also push to Google Sheets
+  // Push to Google Sheets silently — don't affect the main sync status indicator
   if (GS_URL) {
-    setSyncStatus('syncing');
     gsCall('saveSignups', { data: arr })
-      .then(r => setSyncStatus(r?.ok ? 'ok' : 'error'))
-      .catch(() => setSyncStatus('error'));
+      .catch(e => console.warn('saveSignups GS error:', e));
   }
 }
 
-// Load signups — try Google Sheets first, fall back to localStorage
+// Load signups — try Google Sheets first, fall back to localStorage (silent — doesn't affect sync indicator)
 async function loadSignupsFromGS() {
-  if (!GS_URL) { loadSignupsLocal(); setSyncStatus('offline'); return; }
-  setSyncStatus('syncing');
-  const res = await gsCall('getSignups');
-  if (res?.ok && Array.isArray(res.data)) {
-    localStorage.setItem('depdms_signups', JSON.stringify(res.data));
-    setSyncStatus('ok');
-    applySignupsToRuntime(res.data);
-  } else {
-    setSyncStatus('error');
+  if (!GS_URL) { loadSignupsLocal(); return; }
+  try {
+    const res = await gsCall('getSignups');
+    if (res?.ok && Array.isArray(res.data)) {
+      localStorage.setItem('depdms_signups', JSON.stringify(res.data));
+      applySignupsToRuntime(res.data);
+    } else {
+      loadSignupsLocal();
+    }
+  } catch(e) {
     loadSignupsLocal();
   }
 }
@@ -2019,49 +2018,50 @@ async function fpSendOtp() {
 
   // Generate 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  _fpOtpCode    = otp;
-  _fpOtpExpiry  = Date.now() + 5 * 60 * 1000; // 5 minutes
+  _fpOtpCode   = otp;
+  _fpOtpExpiry = Date.now() + 5 * 60 * 1000; // 5 minutes
 
-  // Send OTP via Google Apps Script
-  const res = await gsCall('sendOtp', {
-    email:    user.email,
-    username: user.username,
-    name:     user.name,
-    otp:      otp,
-  });
+  try {
+    // Send OTP via Google Apps Script
+    const res = await gsCall('sendOtp', {
+      email:    user.email,
+      username: user.username || username,
+      name:     user.name    || username,
+      otp:      otp,
+    });
 
-  btn.disabled = false; btn.textContent = 'Send Verification Code →';
+    btn.disabled = false; btn.textContent = 'Send Verification Code →';
 
-  if (!res?.ok) {
-    // Email failed — show OTP directly on screen as fallback
-    // This happens when Apps Script MailApp isn't authorized yet
-    const masked = user.email.replace(/^(.).+(@.+)$/, (_, a, b) => a + '***' + b);
-    document.getElementById('fp-email-hint').textContent = masked + ' (email failed — code shown below)';
-    document.getElementById('fp-step2-username').textContent = username;
+    const emailVal = user.email || '';
+    const masked   = emailVal.replace(/^(.).+(@.+)$/, (_, a, b) => a + '***' + b) || emailVal;
+
+    // Always switch to step 2 regardless of whether email succeeded
     _fpVerifiedUsername = username;
+    const hintEl = document.getElementById('fp-email-hint');
+    const userEl = document.getElementById('fp-step2-username');
+    if (hintEl) hintEl.textContent = masked;
+    if (userEl) userEl.textContent = username;
     _fpStartOtpTimer();
     _fpGoToStep(2);
-    // Show OTP on screen as fallback
-    const otpHint = document.getElementById('fp-otp-fallback');
-    if (otpHint) {
-      otpHint.style.display = 'block';
-      otpHint.textContent = '⚠ Email could not be sent. Your verification code is: ' + otp;
+
+    // If email failed, show code on screen as fallback
+    if (!res?.ok) {
+      const fallback = document.getElementById('fp-otp-fallback');
+      if (fallback) {
+        fallback.style.display = 'block';
+        fallback.textContent   = '⚠ Email not sent. Your code is: ' + otp;
+      }
+      if (hintEl) hintEl.textContent = masked + ' (email failed)';
+      addLogAnon('SAVE', 'OTP shown on-screen (email failed) for "' + username + '"', username, user.name || username, user.dept || '');
+    } else {
+      addLogAnon('SAVE', 'OTP sent to "' + masked + '" for "' + username + '"', username, user.name || username, user.dept || '');
     }
-    addLogAnon('SAVE', 'OTP shown on-screen (email failed) for account "' + username + '"', username, user.name, user.dept);
-    return;
+
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Send Verification Code →';
+    showFpErr('Something went wrong: ' + err.message);
+    console.error('fpSendOtp error:', err);
   }
-
-  // Mask the email for display: j***@gmail.com
-  const masked = user.email.replace(/^(.).+(@.+)$/, (_, a, b) => a + '***' + b);
-  document.getElementById('fp-email-hint').textContent = masked;
-  document.getElementById('fp-step2-username').textContent = username;
-
-  // Start 5-minute countdown
-  _fpVerifiedUsername = username; // store for step 2
-  _fpStartOtpTimer();
-
-  _fpGoToStep(2);
-  addLogAnon('SAVE', 'Password reset OTP sent to "' + masked + '" for account "' + username + '"', username, user.name, user.dept);
 }
 
 let _fpTimerInterval = null;
