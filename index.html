@@ -1388,7 +1388,8 @@ function hideTooltip() {
 }
 document.addEventListener('click', hideTooltip);
 
-function validatePane(paneId) {
+// markErrors=true highlights empty fields red; pass false to count silently (no UI side effects)
+function validatePane(paneId, markErrors = true) {
   const pane = document.getElementById('pane-'+paneId);
   if (!pane) return [];
   const empties = [];
@@ -1396,7 +1397,7 @@ function validatePane(paneId) {
     const td = inp.closest('td');
     if (!td) return;
     if (inp.value.trim() === '') {
-      td.classList.add('inp-error');
+      if (markErrors) td.classList.add('inp-error');
       const lbl = td.dataset.label || inp.id || 'Unknown field';
       empties.push(lbl);
     }
@@ -1490,23 +1491,34 @@ function hideAlerts(){document.getElementById('alert-ok').classList.remove('show
 
 function saveSection(id){
   const isAdmin = currentRole === 'admin';
-  const empties = validatePane(id);
-  if(empties.length > 0 && !isAdmin){
-    // Non-admin: block save and show modal
-    showModal('⚠ Incomplete Fields in '+id.toUpperCase(), empties);
-    addLog('FIELD', `Attempted to save "${id.toUpperCase()}" but ${empties.length} field(s) were empty`);
+
+  if(isAdmin){
+    // Admin: skip all validation and UI error highlights — save immediately
+    const emptyCount = validatePane(id, false).length; // silent count only, no red highlights
+    document.getElementById('nav-'+id)?.classList.add('done');
+    if(emptyCount > 0){
+      showOk(id.toUpperCase()+' saved by Admin (' + emptyCount + ' field(s) left blank) ✓');
+      addLog('SAVE', 'Admin force-saved "' + id.toUpperCase() + '" with ' + emptyCount + ' empty field(s) — Period: ' + getMonth() + ' ' + getYear());
+    } else {
+      showOk(id.toUpperCase()+' saved successfully! ✓');
+      addLog('SAVE', 'Saved section "' + id.toUpperCase() + '" — Period: ' + getMonth() + ' ' + getYear());
+    }
+    renderLog();
+    saveFormDataGS(id);
+    return;
+  }
+
+  // Non-admin: full validation with red highlights
+  const empties = validatePane(id, true);
+  if(empties.length > 0){
+    showModal('⚠ Incomplete Fields in ' + id.toUpperCase(), empties);
+    addLog('FIELD', 'Attempted to save "' + id.toUpperCase() + '" but ' + empties.length + ' field(s) were empty');
     renderLog();
     return;
   }
-  // Admin: save regardless, but log a warning if there were empty fields
   document.getElementById('nav-'+id)?.classList.add('done');
-  if(isAdmin && empties.length > 0){
-    showOk(id.toUpperCase()+` saved by Admin (${empties.length} field(s) left blank) ✓`);
-    addLog('SAVE', `Admin force-saved "${id.toUpperCase()}" with ${empties.length} empty field(s) — Period: ${getMonth()} ${getYear()}`);
-  } else {
-    showOk(id.toUpperCase()+' saved successfully! ✓');
-    addLog('SAVE', `Saved section "${id.toUpperCase()}" — Period: ${getMonth()} ${getYear()}`);
-  }
+  showOk(id.toUpperCase()+' saved successfully! ✓');
+  addLog('SAVE', 'Saved section "' + id.toUpperCase() + '" — Period: ' + getMonth() + ' ' + getYear());
   renderLog();
   saveFormDataGS(id);
 }
