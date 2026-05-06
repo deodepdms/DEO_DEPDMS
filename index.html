@@ -1682,6 +1682,12 @@ function goTab(id){
   if(id==='audit') { renderLog(); updateLogStats(); }
   if(id==='changepw') { document.getElementById('cpw-username-label').textContent = currentUser?.name + ' (' + currentUser?.username + ')'; }
   if(id==='users') renderUserTable();
+  // Auto-refresh CSV preview if its panel is already open
+  const _csvSections = ['mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd'];
+  if(_csvSections.includes(id)){
+    const _body = document.getElementById('csvbody-'+id);
+    if(_body && _body.classList.contains('open')) renderCsvPreview(id);
+  }
 }
 function showOk(msg){const a=document.getElementById('alert-ok');document.getElementById('alert-msg').textContent=msg;a.classList.add('show');setTimeout(()=>a.classList.remove('show'),3000);}
 function showErr(msg){const a=document.getElementById('alert-err');document.getElementById('alert-emsg').textContent=msg;a.classList.add('show');setTimeout(()=>a.classList.remove('show'),4000);}
@@ -2574,18 +2580,7 @@ function toggleCsvPreview(sectionId) {
   if (isOpen) renderCsvPreview(sectionId); // auto-render when opened
 }
 
-// Auto-refresh preview when switching to a tab that has one
-const _origGoTab = goTab;
-function goTab(id) {
-  _origGoTab(id);
-  if (CSV_PREVIEW_SECTIONS.includes(id)) {
-    // If the preview panel is already open, refresh it
-    const body = document.getElementById('csvbody-' + id);
-    if (body && body.classList.contains('open')) {
-      renderCsvPreview(id);
-    }
-  }
-}
+
 
 </script>
 </body>
