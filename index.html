@@ -280,6 +280,119 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
 @media(max-width:860px){.sidebar{display:none;}.role-grid{grid-template-columns:1fr 1fr;}.role-card.admin-card{grid-column:1/-1;}}
 @media(max-width:520px){.role-grid{grid-template-columns:1fr;}}
 
+
+/* ── CSV PREVIEW PANEL ── */
+.csv-preview-wrap {
+  margin-top: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.csv-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+}
+.csv-preview-header:hover { background: rgba(31,111,235,.06); color: var(--accent); }
+.csv-preview-header .csv-ph-left { display: flex; align-items: center; gap: 8px; }
+.csv-preview-header .csv-ph-toggle { font-size: 13px; transition: transform .2s; }
+.csv-preview-header .csv-ph-toggle.open { transform: rotate(180deg); }
+.csv-preview-body { display: none; }
+.csv-preview-body.open { display: block; }
+.csv-preview-scroll { overflow-x: auto; max-height: 320px; overflow-y: auto; }
+.csv-tbl {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+}
+.csv-tbl tr:nth-child(1) td { /* header row */
+  background: rgba(31,111,235,.10);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 10px;
+  padding: 5px 10px;
+  border-bottom: 1px solid rgba(31,111,235,.2);
+  border-right: 1px solid rgba(48,54,61,.5);
+  white-space: nowrap;
+}
+.csv-tbl tr:nth-child(2) td { /* column names */
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid rgba(48,54,61,.5);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.csv-tbl tr:nth-child(3) td { /* types row */
+  background: rgba(139,148,158,.06);
+  color: var(--muted);
+  font-size: 9px;
+  font-style: italic;
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid rgba(48,54,61,.4);
+  white-space: nowrap;
+}
+.csv-tbl tr.csv-data-row td {
+  background: transparent;
+  color: var(--text);
+  padding: 5px 10px;
+  border-bottom: 1px solid rgba(48,54,61,.4);
+  border-right: 1px solid rgba(48,54,61,.3);
+  white-space: nowrap;
+}
+.csv-tbl tr.csv-data-row:hover td { background: rgba(255,255,255,.025); }
+.csv-tbl tr.csv-eof-row td {
+  background: rgba(218,54,51,.06);
+  color: var(--danger);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-right: 1px solid rgba(48,54,61,.3);
+}
+.csv-tbl td.csv-empty { color: rgba(139,148,158,.4); font-style: italic; }
+.csv-preview-footer {
+  padding: 7px 14px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.csv-refresh-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 5px;
+  padding: 3px 10px;
+  font-size: 10px;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  transition: all .15s;
+  margin-left: auto;
+}
+.csv-refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 /* ── DATE INPUT HINT ── */
 .date-hint {
   font-size:9px;color:var(--accent4);margin-top:2px;font-family:'Sora',sans-serif;
@@ -630,6 +743,23 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
           </table>
         </div>
       </div>
+      <!-- CSV Preview MOR-UR -->
+      <div class="csv-preview-wrap" id="csvprev-mor-ur">
+        <div class="csv-preview-header" onclick="toggleCsvPreview('mor-ur')">
+          <div class="csv-ph-left">
+            <span class="csv-ph-toggle" id="csvtoggle-mor-ur">▾</span>
+            <span>📄 CSV Preview – MOR_UR</span>
+            <span style="font-size:10px;color:var(--accent4);font-weight:400;text-transform:none;letter-spacing:0;">Live preview of the export file</span>
+          </div>
+          <button class="csv-refresh-btn" onclick="event.stopPropagation();renderCsvPreview('mor-ur')" title="Refresh preview">↻ Refresh</button>
+        </div>
+        <div class="csv-preview-body" id="csvbody-mor-ur">
+          <div class="csv-preview-scroll"><div id="csvtable-mor-ur" style="padding:12px 14px;color:var(--muted);font-size:11px;">Click ▾ to expand preview.</div></div>
+          <div class="csv-preview-footer">
+            <span id="csvinfo-mor-ur" style="font-family:'DM Mono',monospace;">—</span>
+          </div>
+        </div>
+      </div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="goTab('profile')">← DU Profile</button>
         <button class="btn btn-primary" onclick="saveSection('mor-ur')">✓ Save MOR-UR</button>
@@ -656,6 +786,23 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
           </table>
         </div>
         <button class="add-row-btn" onclick="addWCDRow()">＋ Add Row</button>
+      </div>
+      <!-- CSV Preview MOR-WCD -->
+      <div class="csv-preview-wrap" id="csvprev-mor-wcd">
+        <div class="csv-preview-header" onclick="toggleCsvPreview('mor-wcd')">
+          <div class="csv-ph-left">
+            <span class="csv-ph-toggle" id="csvtoggle-mor-wcd">▾</span>
+            <span>📄 CSV Preview – MOR_WCD</span>
+            <span style="font-size:10px;color:var(--accent4);font-weight:400;text-transform:none;letter-spacing:0;">Live preview of the export file</span>
+          </div>
+          <button class="csv-refresh-btn" onclick="event.stopPropagation();renderCsvPreview('mor-wcd')" title="Refresh preview">↻ Refresh</button>
+        </div>
+        <div class="csv-preview-body" id="csvbody-mor-wcd">
+          <div class="csv-preview-scroll"><div id="csvtable-mor-wcd" style="padding:12px 14px;color:var(--muted);font-size:11px;">Click ▾ to expand preview.</div></div>
+          <div class="csv-preview-footer">
+            <span id="csvinfo-mor-wcd" style="font-family:'DM Mono',monospace;">—</span>
+          </div>
+        </div>
       </div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="goTab('profile')">← DU Profile</button>
@@ -691,6 +838,23 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
           </table>
         </div>
       </div>
+      <!-- CSV Preview MOR-DTD -->
+      <div class="csv-preview-wrap" id="csvprev-mor-dtd">
+        <div class="csv-preview-header" onclick="toggleCsvPreview('mor-dtd')">
+          <div class="csv-ph-left">
+            <span class="csv-ph-toggle" id="csvtoggle-mor-dtd">▾</span>
+            <span>📄 CSV Preview – MOR_DTD</span>
+            <span style="font-size:10px;color:var(--accent4);font-weight:400;text-transform:none;letter-spacing:0;">Live preview of the export file</span>
+          </div>
+          <button class="csv-refresh-btn" onclick="event.stopPropagation();renderCsvPreview('mor-dtd')" title="Refresh preview">↻ Refresh</button>
+        </div>
+        <div class="csv-preview-body" id="csvbody-mor-dtd">
+          <div class="csv-preview-scroll"><div id="csvtable-mor-dtd" style="padding:12px 14px;color:var(--muted);font-size:11px;">Click ▾ to expand preview.</div></div>
+          <div class="csv-preview-footer">
+            <span id="csvinfo-mor-dtd" style="font-family:'DM Mono',monospace;">—</span>
+          </div>
+        </div>
+      </div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="goTab('profile')">← DU Profile</button>
         <button class="btn btn-primary" onclick="saveSection('mor-dtd')">✓ Save MOR-DTD</button>
@@ -715,6 +879,23 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
             </thead>
             <tbody id="csd-body"></tbody>
           </table>
+        </div>
+      </div>
+      <!-- CSV Preview MOR-CSD -->
+      <div class="csv-preview-wrap" id="csvprev-mor-csd">
+        <div class="csv-preview-header" onclick="toggleCsvPreview('mor-csd')">
+          <div class="csv-ph-left">
+            <span class="csv-ph-toggle" id="csvtoggle-mor-csd">▾</span>
+            <span>📄 CSV Preview – MOR_CSD</span>
+            <span style="font-size:10px;color:var(--accent4);font-weight:400;text-transform:none;letter-spacing:0;">Live preview of the export file</span>
+          </div>
+          <button class="csv-refresh-btn" onclick="event.stopPropagation();renderCsvPreview('mor-csd')" title="Refresh preview">↻ Refresh</button>
+        </div>
+        <div class="csv-preview-body" id="csvbody-mor-csd">
+          <div class="csv-preview-scroll"><div id="csvtable-mor-csd" style="padding:12px 14px;color:var(--muted);font-size:11px;">Click ▾ to expand preview.</div></div>
+          <div class="csv-preview-footer">
+            <span id="csvinfo-mor-csd" style="font-family:'DM Mono',monospace;">—</span>
+          </div>
         </div>
       </div>
       <div class="btn-row">
@@ -747,6 +928,23 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
           </table>
         </div>
         <button class="add-row-btn" onclick="addDSDRow()">＋ Add Supplier Row</button>
+      </div>
+      <!-- CSV Preview MOR-DSD -->
+      <div class="csv-preview-wrap" id="csvprev-mor-dsd">
+        <div class="csv-preview-header" onclick="toggleCsvPreview('mor-dsd')">
+          <div class="csv-ph-left">
+            <span class="csv-ph-toggle" id="csvtoggle-mor-dsd">▾</span>
+            <span>📄 CSV Preview – MOR_DSD</span>
+            <span style="font-size:10px;color:var(--accent4);font-weight:400;text-transform:none;letter-spacing:0;">Live preview of the export file</span>
+          </div>
+          <button class="csv-refresh-btn" onclick="event.stopPropagation();renderCsvPreview('mor-dsd')" title="Refresh preview">↻ Refresh</button>
+        </div>
+        <div class="csv-preview-body" id="csvbody-mor-dsd">
+          <div class="csv-preview-scroll"><div id="csvtable-mor-dsd" style="padding:12px 14px;color:var(--muted);font-size:11px;">Click ▾ to expand preview.</div></div>
+          <div class="csv-preview-footer">
+            <span id="csvinfo-mor-dsd" style="font-family:'DM Mono',monospace;">—</span>
+          </div>
+        </div>
       </div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="goTab('profile')">← DU Profile</button>
@@ -2290,6 +2488,105 @@ function deleteSignupUser(username) {
   renderLog();
   renderUserTable();
 }
+
+// ── CSV PREVIEW ENGINE ──────────────────────────────────────────────────────
+// Parses the CSV string built by existing builder functions and renders it
+// as a styled HTML table inside the preview panel.
+
+const CSV_PREVIEW_SECTIONS = ['mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd'];
+
+function parseCsvToRows(csvStr) {
+  // Split on newlines, parse each line respecting quoted commas
+  return csvStr.split(/\r?\n/).map(line => {
+    const cells = [];
+    let inQ = false, cur = '';
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') {
+        if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+        else inQ = !inQ;
+      } else if (c === ',' && !inQ) {
+        cells.push(cur); cur = '';
+      } else {
+        cur += c;
+      }
+    }
+    cells.push(cur);
+    return cells;
+  }).filter(r => r.length > 0 && !(r.length === 1 && r[0] === ''));
+}
+
+function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderCsvTable(rows) {
+  if (!rows || rows.length === 0) return '<div style="padding:14px;color:var(--muted);font-size:11px;">No data to preview.</div>';
+  let html = '<table class="csv-tbl">';
+  rows.forEach((row, ri) => {
+    const isEof  = row[0] === 'EOF';
+    const isData = ri >= 3 && !isEof;
+    const cls    = isEof ? 'csv-eof-row' : (isData ? 'csv-data-row' : '');
+    html += '<tr' + (cls ? ' class="' + cls + '"' : '') + '>';
+    row.forEach(cell => {
+      const isEmpty = cell.trim() === '';
+      html += '<td class="' + (isEmpty && isData ? 'csv-empty' : '') + '">'
+            + (isEmpty && isData ? '—' : escH(cell))
+            + '</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</table>';
+  return html;
+}
+
+function renderCsvPreview(sectionId) {
+  const builder = CSV_BUILDERS[sectionId];
+  if (!builder) return;
+  const tableDiv = document.getElementById('csvtable-' + sectionId);
+  const infoEl   = document.getElementById('csvinfo-' + sectionId);
+  if (!tableDiv) return;
+
+  tableDiv.innerHTML = '<div style="padding:12px 14px;color:var(--accent4);font-size:11px;">⟳ Generating preview…</div>';
+
+  // Use setTimeout so the UI updates before the heavy CSV build
+  setTimeout(() => {
+    try {
+      const csvStr = builder();
+      const rows   = parseCsvToRows(csvStr);
+      const dataRows = Math.max(0, rows.length - 4); // subtract header, cols, types, EOF
+      tableDiv.innerHTML = renderCsvTable(rows);
+      if (infoEl) {
+        const cols = rows[1] ? rows[1].length : 0;
+        infoEl.textContent = '📊 ' + dataRows + ' data row(s) · ' + cols + ' column(s) · ' + getFilename(sectionId);
+      }
+    } catch(e) {
+      tableDiv.innerHTML = '<div style="padding:12px 14px;color:var(--danger);font-size:11px;">⚠ Preview error: ' + escH(String(e)) + '</div>';
+    }
+  }, 30);
+}
+
+// Toggle open/close of the preview panel
+function toggleCsvPreview(sectionId) {
+  const body    = document.getElementById('csvbody-'   + sectionId);
+  const chevron = document.getElementById('csvtoggle-' + sectionId);
+  if (!body) return;
+  const isOpen = body.classList.toggle('open');
+  if (chevron) chevron.classList.toggle('open', isOpen);
+  if (isOpen) renderCsvPreview(sectionId); // auto-render when opened
+}
+
+// Auto-refresh preview when switching to a tab that has one
+const _origGoTab = goTab;
+function goTab(id) {
+  _origGoTab(id);
+  if (CSV_PREVIEW_SECTIONS.includes(id)) {
+    // If the preview panel is already open, refresh it
+    const body = document.getElementById('csvbody-' + id);
+    if (body && body.classList.contains('open')) {
+      renderCsvPreview(id);
+    }
+  }
+}
+
 </script>
 </body>
 </html>
