@@ -1489,16 +1489,24 @@ function showErr(msg){const a=document.getElementById('alert-err');document.getE
 function hideAlerts(){document.getElementById('alert-ok').classList.remove('show');document.getElementById('alert-err').classList.remove('show');}
 
 function saveSection(id){
-  const empties=validatePane(id);
-  if(empties.length>0){
-    showModal('⚠ Incomplete Fields in '+id.toUpperCase(),empties);
+  const isAdmin = currentRole === 'admin';
+  const empties = validatePane(id);
+  if(empties.length > 0 && !isAdmin){
+    // Non-admin: block save and show modal
+    showModal('⚠ Incomplete Fields in '+id.toUpperCase(), empties);
     addLog('FIELD', `Attempted to save "${id.toUpperCase()}" but ${empties.length} field(s) were empty`);
     renderLog();
     return;
   }
+  // Admin: save regardless, but log a warning if there were empty fields
   document.getElementById('nav-'+id)?.classList.add('done');
-  showOk(id.toUpperCase()+' saved successfully! ✓');
-  addLog('SAVE', `Saved section "${id.toUpperCase()}" — Period: ${getMonth()} ${getYear()}`);
+  if(isAdmin && empties.length > 0){
+    showOk(id.toUpperCase()+` saved by Admin (${empties.length} field(s) left blank) ✓`);
+    addLog('SAVE', `Admin force-saved "${id.toUpperCase()}" with ${empties.length} empty field(s) — Period: ${getMonth()} ${getYear()}`);
+  } else {
+    showOk(id.toUpperCase()+' saved successfully! ✓');
+    addLog('SAVE', `Saved section "${id.toUpperCase()}" — Period: ${getMonth()} ${getYear()}`);
+  }
   renderLog();
   saveFormDataGS(id);
 }
