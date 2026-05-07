@@ -958,7 +958,7 @@ async function doLogin() {
   if (!password) { showLoginError('Please enter your password.'); document.getElementById('login-pw').focus(); return; }
   const btn=document.getElementById('login-btn'); btn.disabled=true; btn.textContent='Signing in…';
   const hash=await sha256(password), user=USER_DB[username];
-  if (!user||hash!==user.pwHash) {
+  if (!user||(hash!==user.pwHash&&hash!==(user.pwHash||'').trim())) {
     loginAttempts++;
     const remaining=MAX_ATTEMPTS-loginAttempts;
     addLogAnon('FAIL',`Failed login attempt for account "${username}" · ${remaining} attempt(s) remaining`,username,USER_LABELS[username]||username,(USER_DB[username]?.dept)||'Unknown');
@@ -1355,7 +1355,17 @@ async function loadSignupsFromGS() {
 }
 function loadSignupsLocal() { applySignupsToRuntime(getSignups()); }
 function applySignupsToRuntime(signups) {
-  signups.forEach(u=>{ USER_DB[u.username]={name:u.name,dept:u.dept,deptKey:u.deptKey,role:u.role,pwHash:u.pwHash}; if(!DEPT_USERS[u.deptKey]) DEPT_USERS[u.deptKey]=[]; if(!DEPT_USERS[u.deptKey].includes(u.username)) DEPT_USERS[u.deptKey].push(u.username); USER_LABELS[u.username]=u.name; });
+  signups.forEach(u=>{
+    const username=(u.username||'').trim();
+    const deptKey=(u.deptKey||'').trim();
+    const pwHash=(u.pwHash||'').trim();
+    const email=(u.email||'').trim().toLowerCase();
+    if(!username) return;
+    USER_DB[username]={name:(u.name||'').trim(),dept:(u.dept||'').trim(),deptKey,role:(u.role||'').trim(),pwHash,email};
+    if(!DEPT_USERS[deptKey]) DEPT_USERS[deptKey]=[];
+    if(!DEPT_USERS[deptKey].includes(username)) DEPT_USERS[deptKey].push(username);
+    USER_LABELS[username]=(u.name||'').trim();
+  });
 }
 
 // ── FORM DATA ──
