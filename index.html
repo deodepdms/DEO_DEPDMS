@@ -928,10 +928,14 @@ function dateKeydown(e) {
 
 // ── AUTH SYSTEM ──
 const USER_DB = {
-  'admin': { name:'System Administrator', dept:'Administration', deptKey:'admin', role:'admin', pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
+  'admin':    { name:'System Administrator',  dept:'Administration',          deptKey:'admin',         role:'admin',   pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
+  'finance1': { name:'Finance User',          dept:'Finance Department',       deptKey:'finance',       role:'finance', pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
+  'tsd1':     { name:'TSD User',              dept:'Technical Services Dept.', deptKey:'tsd',           role:'tsd',     pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
+  'pt1':      { name:'Power Trading User',    dept:'Power Trading Dept.',      deptKey:'power-trading', role:'pt',      pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
 };
-const DEPT_USERS = { 'finance':[], 'tsd':[], 'power-trading':[], 'admin':['admin'] };
-const USER_LABELS = { 'admin':'System Administrator' };
+const BUILTIN_PW = { 'admin':'zameco2025', 'finance1':'zameco2025', 'tsd1':'zameco2025', 'pt1':'zameco2025' };
+const DEPT_USERS = { 'finance':['finance1'], 'tsd':['tsd1'], 'power-trading':['pt1'], 'admin':['admin'] };
+const USER_LABELS = { 'admin':'System Administrator', 'finance1':'Finance User', 'tsd1':'TSD User', 'pt1':'Power Trading User' };
 const DEPT_HINTS = {
   'finance':       '<strong>Finance Dept.</strong> — Select an account and use your assigned password.',
   'tsd':           '<strong>Technical Services Dept.</strong> — Manages DU Technical Data (DTD) forms.',
@@ -1012,7 +1016,12 @@ function enterSession(username, user) {
   document.getElementById('session-dept').textContent=user.dept;
 
   currentRole=user.role;
-  const cfg=ROLE_CONFIG[user.role];
+  // Safety: migrate role if it's an old value not in ROLE_CONFIG
+  if (!ROLE_CONFIG[currentRole]) {
+    currentRole = ROLE_MIGRATE[currentRole] || DEPT_DEFAULT_ROLE[user.deptKey] || 'pt';
+    currentUser.role = currentRole;
+  }
+  const cfg=ROLE_CONFIG[currentRole];
   const pill=document.getElementById('sidebar-role-pill');
   pill.textContent=cfg.pill;
   pill.style.setProperty('--pill-color',cfg.color);
@@ -1658,6 +1667,9 @@ async function loadSignupsFromGS() {
   else { setSyncStatus('error'); loadSignupsLocal(); }
 }
 function loadSignupsLocal() { applySignupsToRuntime(getSignups()); }
+// Maps old role values → new role values
+const ROLE_MIGRATE = {'ur':'pt','wcd':'pt','dtd':'tsd','csd':'finance','dsd':'pt'};
+
 function applySignupsToRuntime(signups) {
   signups.forEach(u=>{
     const username=(u.username||'').trim();
@@ -1665,7 +1677,10 @@ function applySignupsToRuntime(signups) {
     const pwHash=(u.pwHash||'').trim();
     const email=(u.email||'').trim().toLowerCase();
     if(!username) return;
-    USER_DB[username]={name:(u.name||'').trim(),dept:(u.dept||'').trim(),deptKey,role:(u.role||'').trim(),pwHash,email};
+    // Migrate old role names to new ones
+    let role=(u.role||'').trim();
+    if(!ROLE_CONFIG[role]) role = ROLE_MIGRATE[role] || DEPT_DEFAULT_ROLE[deptKey] || 'pt';
+    USER_DB[username]={name:(u.name||'').trim(),dept:(u.dept||'').trim(),deptKey,role,pwHash,email};
     if(!DEPT_USERS[deptKey]) DEPT_USERS[deptKey]=[];
     if(!DEPT_USERS[deptKey].includes(username)) DEPT_USERS[deptKey].push(username);
     USER_LABELS[username]=(u.name||'').trim();
