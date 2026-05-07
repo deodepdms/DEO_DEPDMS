@@ -1066,13 +1066,10 @@ function doLogout() {
 
 // ── ROLE CONFIG ──
 const ROLE_CONFIG={
-  'ur':   {label:'MOR-UR Encoder',  pill:'⚡ MOR-UR',  color:'#1f6feb',bg:'rgba(31,111,235,.12)',border:'rgba(31,111,235,.3)', allow:['profile','mor-ur']},
-  'wcd':  {label:'MOR-WCD Encoder', pill:'🔄 MOR-WCD', color:'#3fb950',bg:'rgba(63,185,80,.12)', border:'rgba(63,185,80,.3)',  allow:['profile','mor-wcd']},
-  'dtd':  {label:'MOR-DTD Encoder', pill:'📡 MOR-DTD', color:'#58a6ff',bg:'rgba(88,166,255,.12)',border:'rgba(88,166,255,.3)', allow:['profile','mor-dtd']},
-  'csd':  {label:'MOR-CSD Encoder', pill:'👥 MOR-CSD', color:'#a371f7',bg:'rgba(163,113,247,.12)',border:'rgba(163,113,247,.3)',allow:['profile','mor-csd']},
-  'dsd':  {label:'MOR-DSD Encoder', pill:'🏭 MOR-DSD', color:'#f78166',bg:'rgba(247,129,102,.12)',border:'rgba(247,129,102,.3)',allow:['profile','mor-dsd']},
-  'admin':{label:'Administrator',   pill:'🔐 ADMIN',   color:'#e3b341',bg:'rgba(227,179,65,.12)', border:'rgba(227,179,65,.3)', allow:['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd','export','audit','users']},
-  'pt':   {label:'Power Trading',   pill:'⚡ PWR-TRD',  color:'#f78166',bg:'rgba(247,129,102,.12)',border:'rgba(247,129,102,.3)',allow:['profile','mor-ur','mor-wcd','mor-dsd','export']},
+  'finance':{label:'Finance Dept.',     pill:'💰 FINANCE',  color:'#a371f7',bg:'rgba(163,113,247,.12)',border:'rgba(163,113,247,.3)', allow:['profile','mor-csd']},
+  'tsd':    {label:'Technical Services',pill:'📡 TSD',      color:'#58a6ff',bg:'rgba(88,166,255,.12)', border:'rgba(88,166,255,.3)',  allow:['profile','mor-dtd']},
+  'pt':     {label:'Power Trading',     pill:'⚡ PWR-TRD',  color:'#3fb950',bg:'rgba(63,185,80,.12)',  border:'rgba(63,185,80,.3)',   allow:['profile','mor-ur','mor-wcd','mor-csd','mor-dsd','export']},
+  'admin':  {label:'Administrator',     pill:'🔐 ADMIN',    color:'#e3b341',bg:'rgba(227,179,65,.12)', border:'rgba(227,179,65,.3)',  allow:['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd','export','audit','users']},
 };
 const ALL_PANES=['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd','export','audit','changepw','users'];
 let currentRole=null, currentUser=null;
@@ -1730,7 +1727,7 @@ function toggleFpPw(inputId,btnId){const inp=document.getElementById(inputId);in
 function showSignUp(){document.getElementById('signin-card').style.display='none';document.getElementById('signup-card').style.display='block';document.getElementById('login-error').classList.remove('show');document.getElementById('signup-error').classList.remove('show');document.getElementById('signup-ok').classList.remove('show');}
 function hideSignUp(){document.getElementById('signup-card').style.display='none';document.getElementById('signin-card').style.display='block';}
 function toggleSuPw(){const inp=document.getElementById('su-pw');inp.type=inp.type==='password'?'text':'password';document.getElementById('su-eye').textContent=inp.type==='password'?'👁':'🙈';}
-const DEPT_DEFAULT_ROLE={'finance':'ur','tsd':'dtd','power-trading':'pt','admin':'admin'};
+const DEPT_DEFAULT_ROLE={'finance':'finance','tsd':'tsd','power-trading':'pt','admin':'admin'};
 function onSuDeptChange(){document.getElementById('signup-error').classList.remove('show');}
 function showSignupErr(msg){const el=document.getElementById('signup-error');document.getElementById('signup-error-msg').textContent=msg;el.classList.add('show');document.getElementById('signup-ok').classList.remove('show');}
 function showSignupOk(msg){const el=document.getElementById('signup-ok');document.getElementById('signup-ok-msg').textContent=msg;el.classList.add('show');document.getElementById('signup-error').classList.remove('show');}
