@@ -311,6 +311,14 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
 .csv-refresh-btn:hover{border-color:var(--accent);color:var(--accent);}
 .date-hint{font-size:9px;color:var(--accent4);margin-top:2px;font-family:'Sora',sans-serif;display:block;letter-spacing:.02em;}
 .xls input[type=number]::placeholder,.xls input[type=text]::placeholder{color:rgba(139,148,158,0.5);font-style:italic;}
+/* ── DU Profile column permissions ── */
+.xls td.col-locked{background:rgba(139,148,158,.04);}
+.xls td.col-locked input,.xls td.col-locked select{color:var(--muted);cursor:not-allowed;opacity:.45;pointer-events:none;}
+.xls td.col-unlocked{background:rgba(31,111,235,.04);}
+.col-owner-badge{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;}
+.col-owner-badge.tsd{background:rgba(88,166,255,.15);color:#58a6ff;border:1px solid rgba(88,166,255,.3);}
+.col-owner-badge.finance{background:rgba(227,179,65,.15);color:#e3b341;border:1px solid rgba(227,179,65,.3);}
+.col-owner-badge.admin{background:rgba(63,185,80,.12);color:#3fb950;border:1px solid rgba(63,185,80,.3);}
 </style>
 </head>
 <body>
@@ -573,14 +581,14 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
               <tr class="section-row"><td class="row-num">—</td><td class="field-label" colspan="10">Key Performance Indicators (Cols 10–19)</td></tr>
               <tr><td class="row-num">10</td><td class="field-label is-required">10 – No. of Employees</td><td class="type-cell">Integers</td><td class="has-val" data-label="No. of Employees"><input type="number" id="p_emp" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
               <tr><td class="row-num">11</td><td class="field-label is-required">11 – Connections/Employees</td><td class="type-cell">Integers</td><td class="has-val" data-label="Connections/Employees"><input type="number" id="p_conemp" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">12</td><td class="field-label is-required">12 – Circuit km of Lines</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Circuit km of Lines"><input type="number" id="p_circ" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">13</td><td class="field-label is-required">13 – Consumer Density/km</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Consumer Density/km"><input type="number" id="p_density" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">14</td><td class="field-label is-required">14 – SAIDI</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIDI"><input type="number" id="p_saidi" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">15</td><td class="field-label is-required">15 – SAIFI</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIFI"><input type="number" id="p_saifi" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">16</td><td class="field-label is-required">16 – Collection Efficiency (%)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Collection Efficiency"><input type="number" id="p_collect" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">17</td><td class="field-label is-required">17 – Load Factor (%)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Load Factor"><input type="number" id="p_load" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">18</td><td class="field-label is-required">18 – No. of Substations</td><td class="type-cell">Integers</td><td class="has-val" data-label="No. of Substations"><input type="number" id="p_subs" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">19</td><td class="field-label is-required">19 – Total Capacity (kVA)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Total Capacity (kVA)"><input type="number" id="p_kva" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">12</td><td class="field-label is-required">12 – Circuit km of Lines <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Circuit km of Lines"><input type="number" id="p_circ" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">13</td><td class="field-label is-required">13 – Consumer Density/km <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Consumer Density/km"><input type="number" id="p_density" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">14</td><td class="field-label is-required">14 – SAIDI <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIDI"><input type="number" id="p_saidi" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">15</td><td class="field-label is-required">15 – SAIFI <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIFI"><input type="number" id="p_saifi" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">16</td><td class="field-label is-required">16 – Collection Efficiency (%) <span class="col-owner-badge finance">Finance</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Collection Efficiency"><input type="number" id="p_collect" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">17</td><td class="field-label is-required">17 – Load Factor (%) <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Load Factor"><input type="number" id="p_load" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">18</td><td class="field-label is-required">18 – No. of Substations <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Integers</td><td class="has-val" data-label="No. of Substations"><input type="number" id="p_subs" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">19</td><td class="field-label is-required">19 – Total Capacity (kVA) <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Total Capacity (kVA)"><input type="number" id="p_kva" step="0.0001" placeholder="0.0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
               <tr class="eof"><td class="row-num">—</td><td class="field-label">EOF</td><td colspan="10"></td></tr>
             </tbody>
           </table>
@@ -1010,6 +1018,7 @@ function enterSession(username, user) {
   pill.style.setProperty('--pill-bg',cfg.bg);
   pill.style.setProperty('--pill-border',cfg.border);
   applyPermissions(cfg.allow);
+  applyProfilePermissions();
   document.getElementById('profile-role-badge').textContent=cfg.label+' · '+user.name;
 
   addLog('LOGIN',`Signed in as "${user.name}" · Role: ${cfg.label} · Dept: ${user.dept}`);
@@ -1257,6 +1266,54 @@ function saveSection(id) {
   showOk(id.toUpperCase()+' saved successfully! ✓');
   addLog('SAVE','Saved section "'+id.toUpperCase()+'" — Period: '+getMonth()+' '+getYear());
   renderLog(); saveFormDataGS(id);
+}
+
+// ── DU PROFILE COLUMN PERMISSIONS ──
+// Admin  → all cols editable (no restrictions)
+// TSD    → cols 12–15 and 17–19 editable, rest locked
+// Finance→ col 16 editable, rest locked
+// Others → all cols locked (read-only)
+const PROFILE_TSD_IDS     = ['p_circ','p_density','p_saidi','p_saifi','p_load','p_subs','p_kva'];
+const PROFILE_FINANCE_IDS = ['p_collect'];
+const PROFILE_ALL_KPI_IDS = [...PROFILE_TSD_IDS, ...PROFILE_FINANCE_IDS];
+// Cols 1–11 are general info — always locked for non-admins
+const PROFILE_GENERAL_IDS = ['p_id','p_region','p_company','p_head','p_pres','p_email','p_web','p_tel','p_addr','p_emp','p_conemp'];
+
+function applyProfilePermissions() {
+  const deptKey = currentUser?.deptKey || '';
+  const isAdmin  = currentRole === 'admin';
+
+  // Determine which KPI fields this user may edit
+  let editableKpi = [];
+  if (isAdmin)                  editableKpi = PROFILE_ALL_KPI_IDS;
+  else if (deptKey === 'tsd')   editableKpi = PROFILE_TSD_IDS;
+  else if (deptKey === 'finance') editableKpi = PROFILE_FINANCE_IDS;
+
+  // Lock/unlock each KPI field
+  PROFILE_ALL_KPI_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const td = el.closest('td');
+    const canEdit = editableKpi.includes(id);
+    el.disabled = !canEdit;
+    if (td) {
+      td.classList.toggle('col-locked',  !canEdit);
+      td.classList.toggle('col-unlocked', canEdit && !isAdmin);
+    }
+  });
+
+  // Lock cols 1–11 for everyone except admin
+  PROFILE_GENERAL_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const td = el.closest('td');
+    el.disabled = !isAdmin;
+    if (td) td.classList.toggle('col-locked', !isAdmin);
+  });
+
+  // Show/hide Save button: only admin, tsd, finance can save profile
+  const saveBtn = document.querySelector('#pane-profile .btn-primary');
+  if (saveBtn) saveBtn.style.display = (isAdmin || deptKey === 'tsd' || deptKey === 'finance') ? '' : 'none';
 }
 
 // ── BUILD TABLES ──
