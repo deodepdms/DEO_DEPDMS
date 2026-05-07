@@ -80,7 +80,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .nav-item .dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;}
 .nav-item.done .dot{background:var(--accent2);}
 .nav-item.active .dot{background:var(--accent);}
-.nav-item.locked{opacity:.35;cursor:not-allowed;}
+.nav-item.locked{opacity:.35;cursor:not-allowed;pointer-events:none;}
 .nav-item.locked .dot{background:var(--danger);opacity:.4;}
 .lock-icon{font-size:10px;margin-left:auto;opacity:.5;}
 .sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);font-size:10px;color:var(--muted);}
@@ -95,7 +95,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .tab{padding:9px 18px;cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .tab:hover:not(.tab-locked){color:var(--text);}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.tab.tab-locked{opacity:.3;cursor:not-allowed;}
+.tab.tab-locked{opacity:.3;cursor:not-allowed;pointer-events:none;}
 .content{flex:1;overflow:auto;padding:24px 28px;}
 .section-header{margin-bottom:18px;}
 .section-title{font-size:15px;font-weight:700;margin-bottom:3px;}
@@ -1207,9 +1207,26 @@ function closeModal() { document.getElementById('val-modal').classList.remove('s
 
 // ── PERMISSIONS ──
 function applyPermissions(allow) {
-  const tabMap={'ur':'mor-ur','wcd':'mor-wcd','dtd':'mor-dtd','csd':'mor-csd','dsd':'mor-dsd','export':'export','audit':'audit'};
-  ALL_PANES.forEach(pane=>{ if(pane==='changepw') return; const allowed=allow.includes(pane); const navEl=document.getElementById('nav-'+pane),tabEl=document.getElementById('tab-'+pane); if(navEl) navEl.classList.toggle('locked',!allowed); if(tabEl) tabEl.classList.toggle('tab-locked',!allowed); });
-  ['ur','wcd','dtd','csd','dsd','export','audit','users'].forEach(k=>{ const pane=tabMap[k]||k; const lockEl=document.getElementById('lock-'+k); if(lockEl) lockEl.textContent=allow.includes(pane)?'':'🔒'; });
+  ALL_PANES.forEach(pane => {
+    if (pane === 'changepw') return;
+    const allowed = allow.includes(pane);
+    const navEl = document.getElementById('nav-' + pane);
+    const tabEl = document.getElementById('tab-' + pane);
+    if (navEl) {
+      navEl.classList.toggle('locked', !allowed);
+      navEl.style.pointerEvents = allowed ? '' : 'none';
+    }
+    if (tabEl) {
+      tabEl.classList.toggle('tab-locked', !allowed);
+      tabEl.style.pointerEvents = allowed ? '' : 'none';
+    }
+  });
+  // Update lock icons in nav
+  const iconMap = {'mor-ur':'ur','mor-wcd':'wcd','mor-dtd':'dtd','mor-csd':'csd','mor-dsd':'dsd','export':'export','audit':'audit','users':'users'};
+  Object.entries(iconMap).forEach(([pane, key]) => {
+    const el = document.getElementById('lock-' + key);
+    if (el) el.textContent = allow.includes(pane) ? '' : '🔒';
+  });
 }
 function tryGoTab(id) { if(id==='changepw'){goTab('changepw');return;} const cfg=ROLE_CONFIG[currentRole]; if(!cfg||!cfg.allow.includes(id)){showErr('🔒 Access restricted. Your role: '+cfg.allow.filter(x=>x!=='profile').join(', '));return;} goTab(id); }
 function goToMySection() { const cfg=ROLE_CONFIG[currentRole]; const sec=cfg.allow.find(a=>a!=='profile'); if(sec) goTab(sec); else goTab('export'); }
