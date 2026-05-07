@@ -130,6 +130,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .xls td.has-val{background:rgba(63,185,80,.03);}
 .xls td.is-required{border-left:2px solid rgba(31,111,235,.4);}
 .xls tr.eof td{background:rgba(218,54,51,.06);color:var(--danger);font-size:11px;font-weight:700;letter-spacing:.1em;padding:6px 12px;}
+.xls td.ur-auto input{color:var(--muted)!important;font-style:italic;}
 .xls tr.eof td.field-label{color:var(--danger);background:rgba(218,54,51,.1);}
 .xls tr.section-row td{background:rgba(31,111,235,.08);color:var(--accent);font-size:11px;font-weight:700;padding:7px 12px;border-bottom:1px solid rgba(31,111,235,.2);letter-spacing:.05em;}
 .xls tr.section-row td.row-num{background:rgba(31,111,235,.14);}
@@ -1071,6 +1072,7 @@ const ROLE_CONFIG={
   'csd':  {label:'MOR-CSD Encoder', pill:'👥 MOR-CSD', color:'#a371f7',bg:'rgba(163,113,247,.12)',border:'rgba(163,113,247,.3)',allow:['profile','mor-csd']},
   'dsd':  {label:'MOR-DSD Encoder', pill:'🏭 MOR-DSD', color:'#f78166',bg:'rgba(247,129,102,.12)',border:'rgba(247,129,102,.3)',allow:['profile','mor-dsd']},
   'admin':{label:'Administrator',   pill:'🔐 ADMIN',   color:'#e3b341',bg:'rgba(227,179,65,.12)', border:'rgba(227,179,65,.3)', allow:['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd','export','audit','users']},
+  'pt':   {label:'Power Trading',   pill:'⚡ PWR-TRD',  color:'#f78166',bg:'rgba(247,129,102,.12)',border:'rgba(247,129,102,.3)',allow:['profile','mor-ur','mor-wcd','mor-dsd','export']},
 };
 const ALL_PANES=['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd','export','audit','changepw','users'];
 let currentRole=null, currentUser=null;
@@ -1318,9 +1320,218 @@ function applyProfilePermissions() {
 
 // ── BUILD TABLES ──
 function buildURTable() {
-  const tbody=document.getElementById('ur-body');tbody.innerHTML='';
-  CT.forEach((ct,ri)=>{ const vals=UR_DEF[ct]||Array(29).fill(''); const tr=document.createElement('tr'); const cells=vals.map((v,i)=>`<td class="has-val" data-label="${ct} Col ${i+4}"><input type="number" step="0.0001" value="${v}" placeholder="0.0" style="min-width:90px" oninput="clearErr(this)" onblur="validateField(this)"></td>`).join(''); tr.innerHTML=`<td class="row-num">${ri+1}</td><td class="field-label">${ct}</td><td class="type-cell">PhP/kWh</td>${cells}`; tbody.appendChild(tr); });
-  const eof=document.createElement('tr');eof.className='eof';eof.innerHTML=`<td class="row-num">—</td><td class="field-label">EOF</td><td colspan="32"></td>`;tbody.appendChild(eof);
+  const tbody = document.getElementById('ur-body');
+  tbody.innerHTML = '';
+
+  // Row indices: 0=Res-LL-Grid, 1=Res-NonLL, 2=Com-LV, 3=Ind-HV, 4=Pub-LV, 5=SL-LV, 6=Spec-Light
+  // Col indices (0-based from col4): 0=Gen, 1=GRAM, 2=ICERA, 3=PwrAct, 4=TxSys, 5=TxDem,
+  //   6=SysLoss, 7=DistSys, 8=DistDem, 9=TrueUp, 10=SupSys, 11=SupRetail,
+  //   12=MetSys, 13=MetRetail, 14=RFSC, 15=Lifeline, 16=SC, 17=UCME-SPUG, 18=UCME-REDCI,
+  //   19=UC-EC, 20=UC-SCC, 21=UC-SD, 22=FIT-All, 23=Franchise, 24=RealProp,
+  //   25=GenVAT, 26=TxVAT, 27=DistVAT, 28=OtherVAT
+
+  CT.forEach((ct, ri) => {
+    const vals = UR_DEF[ct] || Array(29).fill('');
+    const tr = document.createElement('tr');
+
+    let cells = '';
+    vals.forEach((v, ci) => {
+      // Determine if this cell is a "trigger" input or an "auto-filled" (readonly) cell
+      let isAuto = false;
+      let triggerAttr = '';
+
+      // Col 4 (ci=0): Gen Charges – only row 0 is editable; rows 1-6 auto-copy from row 0
+      if (ci === 0) {
+        if (ri > 0) { isAuto = true; }
+        else { triggerAttr = `oninput="urAutoFill(this,0)" `; }
+      }
+      // Cols 5-7 (ci=1,2,3): always 0, readonly
+      else if (ci >= 1 && ci <= 3) {
+        isAuto = true; v = 0;
+      }
+      // Col 8 (ci=4): TxSys – row0 editable→copies to row1; row2 editable→copies to rows 4,5,6+; row3 always 0
+      else if (ci === 4) {
+        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,4)" `; }
+        else if (ri === 1) { isAuto = true; }
+        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,4)" `; }
+        else if (ri === 3) { isAuto = true; v = 0; }
+        else { isAuto = true; } // rows 4,5,6 auto from row 2
+      }
+      // Col 9 (ci=5): TxDem – rows 0,1,2, 4,5,6 = 0; only row 3 editable
+      else if (ci === 5) {
+        if (ri === 3) { triggerAttr = ``; }
+        else { isAuto = true; v = 0; }
+      }
+      // Col 10 (ci=6): SysLoss – row 0 editable → all rows same value
+      else if (ci === 6) {
+        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,6)" `; }
+        else { isAuto = true; }
+      }
+      // Col 11 (ci=7): DistSys – same logic as Col 8
+      else if (ci === 7) {
+        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,7)" `; }
+        else if (ri === 1) { isAuto = true; }
+        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,7)" `; }
+        else if (ri === 3) { isAuto = true; v = 0; }
+        else { isAuto = true; }
+      }
+      // Col 12 (ci=8): DistDem – same logic as Col 9
+      else if (ci === 8) {
+        if (ri === 3) { triggerAttr = ``; }
+        else { isAuto = true; v = 0; }
+      }
+      // Col 13 (ci=9): TrueUp – all 0, all readonly
+      else if (ci === 9) {
+        isAuto = true; v = 0;
+      }
+      // Col 14 (ci=10): SupSys – rows 0 & 1 same (row0 editable); rows 2+ = 0
+      else if (ci === 10) {
+        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,10)" `; }
+        else if (ri === 1) { isAuto = true; }
+        else { isAuto = true; v = 0; }
+      }
+      // Col 15 (ci=11): SupRetail – rows 0 & 1 = 0; rows 2-6 same (row2 editable)
+      else if (ci === 11) {
+        if (ri <= 1) { isAuto = true; v = 0; }
+        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,11)" `; }
+        else { isAuto = true; }
+      }
+      // Col 16 (ci=12): MetSys – same as Col 14
+      else if (ci === 12) {
+        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,12)" `; }
+        else if (ri === 1) { isAuto = true; }
+        else { isAuto = true; v = 0; }
+      }
+      // Col 17 (ci=13): MetRetail – rows 0 & 1 same (row0 editable); rows 2-6 same (row2 editable)
+      else if (ci === 13) {
+        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,13,0)" `; }
+        else if (ri === 1) { isAuto = true; }
+        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,13,2)" `; }
+        else { isAuto = true; }
+      }
+
+      if (isAuto) {
+        cells += `<td class="has-val ur-auto" data-col="${ci}" data-row="${ri}" data-label="${ct} Col ${ci+4}" style="background:rgba(139,148,158,.05)"><input type="number" step="0.0001" value="${v}" placeholder="0.0" style="min-width:90px;opacity:.6;cursor:default" readonly tabindex="-1"></td>`;
+      } else {
+        const autoCall = triggerAttr ? triggerAttr.replace('oninput="','').replace('" ','') : '';
+        const onInput = autoCall ? `oninput="clearErr(this);${autoCall}"` : `oninput="clearErr(this)"`;
+        cells += `<td class="has-val" data-col="${ci}" data-row="${ri}" data-label="${ct} Col ${ci+4}"><input type="number" step="0.0001" value="${v}" placeholder="0.0" style="min-width:90px" ${onInput} onblur="validateField(this)"></td>`;
+      }
+    });
+
+    tr.innerHTML = `<td class="row-num">${ri+1}</td><td class="field-label">${ct}</td><td class="type-cell">PhP/kWh</td>${cells}`;
+    tbody.appendChild(tr);
+  });
+
+  const eof = document.createElement('tr');
+  eof.className = 'eof';
+  eof.innerHTML = `<td class="row-num">—</td><td class="field-label">EOF</td><td colspan="32"></td>`;
+  tbody.appendChild(eof);
+
+  // Initialize auto-fill from existing UR_DEF values
+  urInitAutoFill();
+}
+
+function urInitAutoFill() {
+  // Trigger each auto-fill rule using the default values so readonly cells are correct on load
+  const tbody = document.getElementById('ur-body');
+  if (!tbody) return;
+  const rows = tbody.querySelectorAll('tr:not(.eof)');
+
+  function getInput(ri, ci) {
+    return rows[ri]?.querySelectorAll('td.has-val input')[ci] || null;
+  }
+  function setAuto(ri, ci, val) {
+    const td = rows[ri]?.querySelector(`td[data-col="${ci}"]`);
+    if (td) { const inp = td.querySelector('input'); if (inp) inp.value = val; }
+  }
+
+  // Col 0 (Gen): rows 1-6 = row 0 value
+  const gen0 = getInput(0, 0)?.value || 0;
+  for (let r = 1; r <= 6; r++) setAuto(r, 0, gen0);
+
+  // Col 4 (TxSys): row1 = row0; rows4,5,6 = row2
+  const tx0 = getInput(0, 4)?.value || 0;
+  const tx2 = getInput(2, 4)?.value || 0;
+  setAuto(1, 4, tx0); setAuto(3, 4, 0);
+  for (let r = 4; r <= 6; r++) setAuto(r, 4, tx2);
+
+  // Col 6 (SysLoss): rows 1-6 = row 0
+  const sl0 = getInput(0, 6)?.value || 0;
+  for (let r = 1; r <= 6; r++) setAuto(r, 6, sl0);
+
+  // Col 7 (DistSys): same as TxSys
+  const ds0 = getInput(0, 7)?.value || 0;
+  const ds2 = getInput(2, 7)?.value || 0;
+  setAuto(1, 7, ds0); setAuto(3, 7, 0);
+  for (let r = 4; r <= 6; r++) setAuto(r, 7, ds2);
+
+  // Col 10 (SupSys): row1 = row0; rows 2-6 = 0
+  const ss0 = getInput(0, 10)?.value || 0;
+  setAuto(1, 10, ss0);
+
+  // Col 11 (SupRetail): rows 3-6 = row2
+  const sr2 = getInput(2, 11)?.value || 0;
+  for (let r = 3; r <= 6; r++) setAuto(r, 11, sr2);
+
+  // Col 12 (MetSys): row1 = row0; rows 2-6 = 0
+  const ms0 = getInput(0, 12)?.value || 0;
+  setAuto(1, 12, ms0);
+
+  // Col 13 (MetRetail): row1 = row0; rows 3-6 = row2
+  const mr0 = getInput(0, 13)?.value || 0;
+  const mr2 = getInput(2, 13)?.value || 0;
+  setAuto(1, 13, mr0);
+  for (let r = 3; r <= 6; r++) setAuto(r, 13, mr2);
+}
+
+function urAutoFill(inp, ci, groupStart) {
+  const tbody = document.getElementById('ur-body');
+  const rows = tbody.querySelectorAll('tr:not(.eof)');
+  const val = inp.value;
+
+  function setAuto(ri, c, v) {
+    const td = rows[ri]?.querySelector(`td[data-col="${c}"]`);
+    if (td) { const i = td.querySelector('input'); if (i) i.value = v; }
+  }
+
+  if (ci === 0) {
+    // Col 4 (Gen): fill rows 1-6
+    for (let r = 1; r <= 6; r++) setAuto(r, 0, val);
+  }
+  else if (ci === 4) {
+    // Col 8 (TxSys): editing row0 → copy to row1; editing row2 → copy to rows 4,5,6
+    const ri = parseInt(inp.closest('td').dataset.row);
+    if (ri === 0) { setAuto(1, 4, val); }
+    else if (ri === 2) { for (let r = 4; r <= 6; r++) setAuto(r, 4, val); }
+  }
+  else if (ci === 6) {
+    // Col 10 (SysLoss): fill rows 1-6
+    for (let r = 1; r <= 6; r++) setAuto(r, 6, val);
+  }
+  else if (ci === 7) {
+    // Col 11 (DistSys): same as TxSys
+    const ri = parseInt(inp.closest('td').dataset.row);
+    if (ri === 0) { setAuto(1, 7, val); }
+    else if (ri === 2) { for (let r = 4; r <= 6; r++) setAuto(r, 7, val); }
+  }
+  else if (ci === 10) {
+    // Col 14 (SupSys): row0 → row1
+    setAuto(1, 10, val);
+  }
+  else if (ci === 11) {
+    // Col 15 (SupRetail): row2 → rows 3-6
+    for (let r = 3; r <= 6; r++) setAuto(r, 11, val);
+  }
+  else if (ci === 12) {
+    // Col 16 (MetSys): row0 → row1
+    setAuto(1, 12, val);
+  }
+  else if (ci === 13) {
+    // Col 17 (MetRetail): row0 → row1; row2 → rows 3-6
+    if (groupStart === 0) { setAuto(1, 13, val); }
+    else if (groupStart === 2) { for (let r = 3; r <= 6; r++) setAuto(r, 13, val); }
+  }
 }
 function buildCSDTable() {
   const tbody=document.getElementById('csd-body');tbody.innerHTML='';
@@ -1519,7 +1730,7 @@ function toggleFpPw(inputId,btnId){const inp=document.getElementById(inputId);in
 function showSignUp(){document.getElementById('signin-card').style.display='none';document.getElementById('signup-card').style.display='block';document.getElementById('login-error').classList.remove('show');document.getElementById('signup-error').classList.remove('show');document.getElementById('signup-ok').classList.remove('show');}
 function hideSignUp(){document.getElementById('signup-card').style.display='none';document.getElementById('signin-card').style.display='block';}
 function toggleSuPw(){const inp=document.getElementById('su-pw');inp.type=inp.type==='password'?'text':'password';document.getElementById('su-eye').textContent=inp.type==='password'?'👁':'🙈';}
-const DEPT_DEFAULT_ROLE={'finance':'ur','tsd':'dtd','power-trading':'dsd','admin':'admin'};
+const DEPT_DEFAULT_ROLE={'finance':'ur','tsd':'dtd','power-trading':'pt','admin':'admin'};
 function onSuDeptChange(){document.getElementById('signup-error').classList.remove('show');}
 function showSignupErr(msg){const el=document.getElementById('signup-error');document.getElementById('signup-error-msg').textContent=msg;el.classList.add('show');document.getElementById('signup-ok').classList.remove('show');}
 function showSignupOk(msg){const el=document.getElementById('signup-ok');document.getElementById('signup-ok-msg').textContent=msg;el.classList.add('show');document.getElementById('signup-error').classList.remove('show');}
