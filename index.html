@@ -924,42 +924,15 @@ function onDeptChange() {
   const userSel = document.getElementById('login-user');
   const hint = document.getElementById('dept-hint');
   userSel.innerHTML = '';
+  if (!dept) { userSel.innerHTML='<option value="">— Select department first —</option>'; userSel.disabled=true; hint.innerHTML='Select a department above to see available accounts.'; return; }
+  const users = DEPT_USERS[dept] || [];
+  userSel.innerHTML = '<option value="">— Select account —</option>';
+  users.forEach(u => { const opt=document.createElement('option'); opt.value=u; opt.textContent=USER_LABELS[u]||u; userSel.appendChild(opt); });
+  userSel.disabled = false;
+  hint.innerHTML = DEPT_HINTS[dept] || '';
   document.getElementById('login-error').classList.remove('show');
   document.getElementById('login-pw').value = '';
   document.getElementById('login-pw').classList.remove('err');
-  if (!dept) {
-    userSel.innerHTML='<option value="">— Select department first —</option>';
-    userSel.disabled=true;
-    hint.innerHTML='Select a department above to see available accounts.';
-    return;
-  }
-  hint.innerHTML = DEPT_HINTS[dept] || '';
-  // Step 1: populate immediately from whatever we have cached (instant, no wait)
-  applySignupsToRuntime(getSignups());
-  _fillUserDropdown(dept);
-  // Step 2: silently refresh from GS in background, then re-fill if new data arrived
-  if (GS_URL) {
-    gsCall('getSignups').then(res => {
-      if (res?.ok && Array.isArray(res.data)) {
-        localStorage.setItem('depdms_signups', JSON.stringify(res.data));
-        applySignupsToRuntime(res.data);
-        // Only re-fill if user hasn't selected yet
-        if (!userSel.value) _fillUserDropdown(dept);
-      }
-    }).catch(() => {});
-  }
-}
-function _fillUserDropdown(dept) {
-  const userSel = document.getElementById('login-user');
-  const users = DEPT_USERS[dept] || [];
-  userSel.innerHTML = '<option value="">— Select account —</option>';
-  users.forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u;
-    opt.textContent = USER_LABELS[u] || u;
-    userSel.appendChild(opt);
-  });
-  userSel.disabled = false;
 }
 
 function togglePwVis() {
@@ -1352,7 +1325,7 @@ async function gsCall(action, payload={}) {
   if (!GS_URL) return null;
   try {
     const controller = new AbortController();
-    const timeoutId  = setTimeout(() => controller.abort(), 4000);
+    const timeoutId  = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(GS_URL, {
       method:  'POST',
       headers: { 'Content-Type': 'text/plain' },
