@@ -1012,12 +1012,9 @@ function enterSession(username, user) {
   document.getElementById('session-name').textContent=user.name;
   document.getElementById('session-dept').textContent=user.dept;
 
-  currentRole=user.role;
-  // Safety: migrate role if it's an old value not in ROLE_CONFIG
-  if (!ROLE_CONFIG[currentRole]) {
-    currentRole = ROLE_MIGRATE[currentRole] || DEPT_DEFAULT_ROLE[user.deptKey] || 'pt';
-    currentUser.role = currentRole;
-  }
+  // ALWAYS derive role from deptKey — never trust stored role value
+  currentRole = DEPT_DEFAULT_ROLE[user.deptKey] || 'finance';
+  currentUser.role = currentRole;
   const cfg=ROLE_CONFIG[currentRole];
   const pill=document.getElementById('sidebar-role-pill');
   pill.textContent=cfg.pill;
@@ -1674,9 +1671,9 @@ function applySignupsToRuntime(signups) {
     const pwHash=(u.pwHash||'').trim();
     const email=(u.email||'').trim().toLowerCase();
     if(!username) return;
-    // Migrate old role names to new ones
-    let role=(u.role||'').trim();
-    if(!ROLE_CONFIG[role]) role = ROLE_MIGRATE[role] || DEPT_DEFAULT_ROLE[deptKey] || 'pt';
+    // ALWAYS derive role from deptKey — never trust the stored role value
+    // because old signups may have stale role names like 'ur','wcd','csd' etc.
+    const role = DEPT_DEFAULT_ROLE[deptKey] || 'finance';
     USER_DB[username]={name:(u.name||'').trim(),dept:(u.dept||'').trim(),deptKey,role,pwHash,email};
     if(!DEPT_USERS[deptKey]) DEPT_USERS[deptKey]=[];
     if(!DEPT_USERS[deptKey].includes(username)) DEPT_USERS[deptKey].push(username);
