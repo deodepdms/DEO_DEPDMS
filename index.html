@@ -580,16 +580,16 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
               <tr><td class="row-num">8</td><td class="field-label is-required">8 – Telephone Number</td><td class="type-cell">Alphanumeric</td><td class="has-val" data-label="Telephone Number"><input type="text" id="p_tel" value="047-603-0858/ 09083800859" style="min-width:220px" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
               <tr><td class="row-num">9</td><td class="field-label is-required">9 – Physical Address</td><td class="type-cell">Alphanumeric</td><td class="has-val" data-label="Physical Address"><input type="text" id="p_addr" value="PUROK 1/ BARANGAY TITION/ PALAUIG/ ZAMBALES" style="min-width:320px" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
               <tr class="section-row"><td class="row-num">—</td><td class="field-label" colspan="10">Key Performance Indicators (Cols 10–19)</td></tr>
-              <tr><td class="row-num">10</td><td class="field-label is-required">10 – No. of Employees</td><td class="type-cell">Integers</td><td class="has-val" data-label="No. of Employees"><input type="number" id="p_emp" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">11</td><td class="field-label is-required">11 – Connections/Employees</td><td class="type-cell">Integers</td><td class="has-val" data-label="Connections/Employees"><input type="number" id="p_conemp" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">12</td><td class="field-label is-required">12 – Circuit km of Lines <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Circuit km of Lines"><input type="number" id="p_circ" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">13</td><td class="field-label is-required">13 – Consumer Density/km <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Consumer Density/km"><input type="number" id="p_density" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">14</td><td class="field-label is-required">14 – SAIDI <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIDI"><input type="number" id="p_saidi" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">15</td><td class="field-label is-required">15 – SAIFI <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIFI"><input type="number" id="p_saifi" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">16</td><td class="field-label is-required">16 – Collection Efficiency (%) <span class="col-owner-badge finance">Finance</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Collection Efficiency"><input type="number" id="p_collect" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">17</td><td class="field-label is-required">17 – Load Factor (%) <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Load Factor"><input type="number" id="p_load" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">18</td><td class="field-label is-required">18 – No. of Substations <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Integers</td><td class="has-val" data-label="No. of Substations"><input type="number" id="p_subs" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">19</td><td class="field-label is-required">19 – Total Capacity (kVA) <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Total Capacity (kVA)"><input type="number" id="p_kva" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">10</td><td class="field-label is-required">10 – No. of Employees</td><td class="type-cell">Integers</td><td class="has-val" data-label="No. of Employees"><input type="number" id="p_emp" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">11</td><td class="field-label is-required">11 – Connections/Employees</td><td class="type-cell">Integers</td><td class="has-val" data-label="Connections/Employees"><input type="number" id="p_conemp" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">12</td><td class="field-label is-required">12 – Circuit km of Lines <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Circuit km of Lines"><input type="number" id="p_circ" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">13</td><td class="field-label is-required">13 – Consumer Density/km <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Consumer Density/km"><input type="number" id="p_density" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">14</td><td class="field-label is-required">14 – SAIDI <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIDI"><input type="number" id="p_saidi" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">15</td><td class="field-label is-required">15 – SAIFI <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="SAIFI"><input type="number" id="p_saifi" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">16</td><td class="field-label is-required">16 – Collection Efficiency (%) <span class="col-owner-badge finance">Finance</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Collection Efficiency"><input type="number" id="p_collect" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">17</td><td class="field-label is-required">17 – Load Factor (%) <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Load Factor"><input type="number" id="p_load" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">18</td><td class="field-label is-required">18 – No. of Substations <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Integers</td><td class="has-val" data-label="No. of Substations"><input type="number" id="p_subs" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">19</td><td class="field-label is-required">19 – Total Capacity (kVA) <span class="col-owner-badge tsd">TSD</span></td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Total Capacity (kVA)"><input type="number" id="p_kva" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
               <tr class="eof"><td class="row-num">—</td><td class="field-label">EOF</td><td colspan="10"></td></tr>
             </tbody>
           </table>
@@ -695,11 +695,11 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
               <tr class="col-nums"><th class="row-num-head">#</th><th class="col-label-head">Field Name</th><th class="col-type-head">Data Type</th><th>Value</th></tr>
             </thead>
             <tbody>
-              <tr><td class="row-num">3</td><td class="field-label is-required">3 – Maximum Load (kW)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Maximum Load"><input type="number" id="dtd_ml" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">4</td><td class="field-label is-required">4 – Company Use (MWh)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Company Use"><input type="number" id="dtd_cu" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">5</td><td class="field-label is-required">5 – System Loss (MWh)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="System Loss"><input type="number" id="dtd_sl" step="0.0001" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">6</td><td class="field-label is-required">6 – Total No. of Barangays</td><td class="type-cell">Integers</td><td class="has-val" data-label="Total Barangays"><input type="number" id="dtd_tb" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
-              <tr><td class="row-num">7</td><td class="field-label is-required">7 – Total Energized Barangays</td><td class="type-cell">Integers</td><td class="has-val" data-label="Energized Barangays"><input type="number" id="dtd_eb" placeholder="" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">3</td><td class="field-label is-required">3 – Maximum Load (kW)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Maximum Load"><input type="number" id="dtd_ml" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">4</td><td class="field-label is-required">4 – Company Use (MWh)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="Company Use"><input type="number" id="dtd_cu" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">5</td><td class="field-label is-required">5 – System Loss (MWh)</td><td class="type-cell">Numeric (4 dec.)</td><td class="has-val" data-label="System Loss"><input type="number" id="dtd_sl" step="0.0001" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">6</td><td class="field-label is-required">6 – Total No. of Barangays</td><td class="type-cell">Integers</td><td class="has-val" data-label="Total Barangays"><input type="number" id="dtd_tb" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
+              <tr><td class="row-num">7</td><td class="field-label is-required">7 – Total Energized Barangays</td><td class="type-cell">Integers</td><td class="has-val" data-label="Energized Barangays"><input type="number" id="dtd_eb" placeholder="0" oninput="clearErr(this)" onblur="validateField(this)"></td></tr>
               <tr class="eof"><td class="row-num">—</td><td class="field-label">EOF</td><td colspan="5"></td></tr>
             </tbody>
           </table>
@@ -957,37 +957,17 @@ function onDeptChange() {
   const userSel = document.getElementById('login-user');
   const hint = document.getElementById('dept-hint');
   userSel.innerHTML = '';
+  if (!dept) { userSel.innerHTML='<option value="">— Select department first —</option>'; userSel.disabled=true; hint.innerHTML='Select a department above to see available accounts.'; return; }
+  const users = DEPT_USERS[dept] || [];
+  userSel.innerHTML = '<option value="">— Select account —</option>';
+  users.forEach(u => { const opt=document.createElement('option'); opt.value=u; opt.textContent=USER_LABELS[u]||u; userSel.appendChild(opt); });
+  userSel.disabled = false;
+  hint.innerHTML = DEPT_HINTS[dept] || '';
   document.getElementById('login-error').classList.remove('show');
   document.getElementById('login-pw').value = '';
   document.getElementById('login-pw').classList.remove('err');
-  if (!dept) { userSel.innerHTML='<option value="">— Select department first —</option>'; userSel.disabled=true; hint.innerHTML='Select a department above to see available accounts.'; return; }
-  hint.innerHTML = DEPT_HINTS[dept] || '';
-  // Step 1: fill instantly from localStorage (zero wait)
-  _fillLoginDropdown(dept);
-  // Step 2: refresh from GS in background
-  if (GS_URL) {
-    gsCall('getSignups').then(res => {
-      if (res?.ok && Array.isArray(res.data)) {
-        localStorage.setItem('depdms_signups', JSON.stringify(res.data));
-        applySignupsToRuntime(res.data);
-        if (!userSel.value) _fillLoginDropdown(dept);
-      }
-    }).catch(() => {});
-  }
 }
-function _fillLoginDropdown(dept) {
-  applySignupsToRuntime(getSignups());
-  const userSel = document.getElementById('login-user');
-  const users = DEPT_USERS[dept] || [];
-  userSel.innerHTML = '<option value="">— Select account —</option>';
-  users.forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u;
-    opt.textContent = USER_LABELS[u] || u;
-    userSel.appendChild(opt);
-  });
-  userSel.disabled = false;
-}
+
 function togglePwVis() {
   const inp = document.getElementById('login-pw');
   inp.type = inp.type==='password'?'text':'password';
@@ -1205,13 +1185,13 @@ function exportLogCSV() {
 
 // ── TABLE DEFAULT DATA ──
 const UR_DEF={
-  'Residential-Lifeline-Grid': [0.6366,0,0,0,1.1892,0,0.2669,0.5143,0,0,0.5828,0,0.3669,5,0.2508,0,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371,0],
-  'Residential-Non-Lifeline':  [0.6366,0,0,0,1.1892,0,0.2669,0.5143,0,0,0.5828,0,0.3669,5,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371,0],
-  'Commercial-LV':             [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371,0],
-  'Industrial-HV':             [0.6366,0,0,0,0,356.98,0.2669,0,190.03,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371,0],
-  'Public-Building-LV':        [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371,0],
-  'Streetlights-LV':           [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371,0],
-  'Special-Lighting':          [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371,0],
+  'Residential-Lifeline-Grid': Array(32).fill(''),
+  'Residential-Non-Lifeline':  Array(32).fill(''),
+  'Commercial-LV':             Array(32).fill(''),
+  'Industrial-HV':             Array(32).fill(''),
+  'Public-Building-LV':        Array(32).fill(''),
+  'Streetlights-LV':           Array(32).fill(''),
+  'Special-Lighting':          Array(32).fill(''),
 };
 const CSD_DEF={ 'Residential-Lifeline-Grid':[0,0,0,0],'Residential-Non-Lifeline':[0,0,0,0],'Commercial-LV':[0,0,0,0],'Industrial-HV':[0,0,0,0],'Public-Building-LV':[0,0,0,0],'Streetlights-LV':[0,0,0,0],'Special-Lighting':[0,0,0,0] };
 const DSD_DEF=[['Net-Metering','N','','','','','','',''],['WESM','N','','','','','','',''],['SPARC','N','','','','','','','']];
@@ -1362,7 +1342,7 @@ function buildURTable() {
   tbody.innerHTML = '';
 
   CT.forEach((ct, ri) => {
-    const vals = UR_DEF[ct] || Array(32).fill(0);
+    const vals = UR_DEF[ct] || Array(31).fill(0);
     const tr = document.createElement('tr');
     let cells = '';
 
@@ -1436,12 +1416,20 @@ function buildURTable() {
         else isAuto = true;
       }
 
-      if (isAuto) {
-        cells += `<td class="has-val ur-auto" data-col="${ci}" data-row="${ri}" data-label="${ct} Col ${ci+4}" style="background:rgba(139,148,158,.05)"><input type="number" step="0.0001" value="${v}" placeholder="0.0" style="min-width:90px;opacity:.6;cursor:default" readonly tabindex="-1"></td>`;
+      const isAdmin = currentRole === 'admin';
+      // isZeroLocked = this cell is always 0 (not a copy of another cell)
+      const isZeroLocked = isAuto && v === 0 && triggerAttr === '';
+
+      if (isAuto && !isAdmin) {
+        const displayVal = isZeroLocked ? '0' : '';
+        cells += `<td class="has-val ur-auto" data-col="${ci}" data-row="${ri}" data-label="${ct} Col ${ci+4}" style="background:rgba(139,148,158,.05)"><input type="number" step="0.0001" value="${displayVal}" placeholder="0.0" style="min-width:90px;opacity:.6;cursor:default" readonly tabindex="-1"></td>`;
+      } else if (isAuto && isAdmin) {
+        const displayVal = isZeroLocked ? '0' : '';
+        cells += `<td class="has-val ur-auto" data-col="${ci}" data-row="${ri}" data-label="${ct} Col ${ci+4}" style="background:rgba(31,111,235,.04)"><input type="number" step="0.0001" value="${displayVal}" placeholder="0.0" style="min-width:90px" oninput="clearErr(this)" onblur="validateField(this)"></td>`;
       } else {
         const autoCall = triggerAttr ? triggerAttr.replace('oninput="','').replace('" ','') : '';
         const onInput = autoCall ? `oninput="clearErr(this);${autoCall}"` : `oninput="clearErr(this)"`;
-        cells += `<td class="has-val" data-col="${ci}" data-row="${ri}" data-label="${ct} Col ${ci+4}"><input type="number" step="0.0001" value="${v||''}" placeholder="" style="min-width:90px" ${onInput} onblur="validateField(this)"></td>`;
+        cells += `<td class="has-val" data-col="${ci}" data-row="${ri}" data-label="${ct} Col ${ci+4}"><input type="number" step="0.0001" placeholder="0.0" style="min-width:90px" ${onInput} onblur="validateField(this)"></td>`;
       }
     });
 
@@ -1476,7 +1464,7 @@ function urInitAutoFill() {
   const mr=getVal(2,13); for(let r=3;r<=6;r++) setAuto(r,13,mr);
   const rfsc=getVal(0,14); for(let r=1;r<=6;r++) setAuto(r,14,rfsc);
   setAuto(0,15,0); const ll=getVal(1,15); for(let r=2;r<=6;r++) setAuto(r,15,ll);
-  for(let ci=16;ci<=30;ci++){ const val=getVal(0,ci); for(let r=1;r<=6;r++) setAuto(r,ci,val); }
+  for(let ci=16;ci<=31;ci++){ const val=getVal(0,ci); for(let r=1;r<=6;r++) setAuto(r,ci,val); }
 }
 
 function urAutoFill(inp, ci, groupStart) {
@@ -1506,30 +1494,38 @@ function urAutoFill(inp, ci, groupStart) {
   }
   else if (ci===14) { for(let r=1;r<=6;r++) setAuto(r,14,val); }
   else if (ci===15) { for(let r=2;r<=6;r++) setAuto(r,15,val); }
-  else if (ci>=16 && ci<=30) { for(let r=1;r<=6;r++) setAuto(r,ci,val); }
+  else if (ci>=16 && ci<=31) { for(let r=1;r<=6;r++) setAuto(r,ci,val); }
 }
 function buildCSDTable() {
-  const tbody=document.getElementById('csd-body');tbody.innerHTML='';
-  const isAdmin=currentRole==='admin';
-  const isFinance=currentRole==='finance'||isAdmin;
-  const isPT=currentRole==='pt'||isAdmin;
-  function mkCell(label,editable,isInt){
-    const step=isInt?'1':'0.0001';
-    const roAttr=editable?'oninput="clearErr(this)" onblur="validateField(this)"':'readonly tabindex="-1"';
-    const roStyle=editable?'':';opacity:.6;cursor:default';
-    const tdStyle=editable?'':' style="background:rgba(139,148,158,.05)"';
-    return `<td class="has-val" data-label="${label}"${tdStyle}><input type="number" step="${step}" placeholder="" style="min-width:120px${roStyle}" ${roAttr}></td>`;
-  }
-  CT.forEach((ct,ri)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="row-num">${ri+1}</td><td class="field-label">${ct}</td><td class="type-cell">—</td>`
-      +mkCell(`${ct} – No. of Customers`,isFinance,true)
-      +mkCell(`${ct} – Electricity Sales`,isFinance,false)
-      +mkCell(`${ct} – Effective Rate`,isPT,false)
-      +mkCell(`${ct} – Capacity Alloc`,isPT,false);
+  const tbody = document.getElementById('csd-body');
+  tbody.innerHTML = '';
+  const isAdmin = currentRole === 'admin';
+  const deptKey = currentUser?.deptKey || '';
+  // Col 4-5: finance (or admin) can edit; Col 6-7: power-trading (or admin) can edit
+  const canFinance = isAdmin || deptKey === 'finance';
+  const canPT      = isAdmin || deptKey === 'power-trading';
+
+  CT.forEach((ct, ri) => {
+    const tr = document.createElement('tr');
+    const mkCell = (label, type, canEdit, isInt) => {
+      const inp = `<input type="number" ${isInt?'':'step="0.0001"'} placeholder="0" style="min-width:${isInt?'120':'130'}px${canEdit?'':';opacity:.45;cursor:not-allowed'}" ${canEdit?'oninput="clearErr(this)" onblur="validateField(this)"':' readonly tabindex="-1"'}>`;
+      return `<td class="has-val${canEdit?'':' col-locked'}" data-label="${ct} – ${label}" style="${canEdit?'':'background:rgba(139,148,158,.05)'}; ">${inp}</td>`;
+    };
+    tr.innerHTML =
+      `<td class="row-num">${ri+1}</td>` +
+      `<td class="field-label">${ct}</td>` +
+      `<td class="type-cell">—</td>` +
+      mkCell('No. of Customers',   'int',  canFinance, true)  +  // col 4
+      mkCell('Electricity Sales',  'num',  canFinance, false) +  // col 5
+      mkCell('Effective Rate',     'num',  canPT,      false) +  // col 6
+      mkCell('Capacity Allocation','num',  canPT,      false);   // col 7
     tbody.appendChild(tr);
   });
-  const eof=document.createElement('tr');eof.className='eof';eof.innerHTML=`<td class="row-num">—</td><td class="field-label">EOF</td><td colspan="6"></td>`;tbody.appendChild(eof);
+
+  const eof = document.createElement('tr');
+  eof.className = 'eof';
+  eof.innerHTML = `<td class="row-num">—</td><td class="field-label">EOF</td><td colspan="6"></td>`;
+  tbody.appendChild(eof);
 }
 function buildWCDTable(){document.getElementById('wcd-body').innerHTML='';wcdCount=0;WCD_DEF.forEach(r=>addWCDRowData(r));}
 function addWCDRow(){addWCDRowData(['','','','']);}
@@ -1539,7 +1535,7 @@ function addWCDRowData([cat,ncust,elec,rate]){
   const tbody=document.getElementById('wcd-body');
   const opts=WCD_CATS.map(c=>`<option ${c===cat?'selected':''}>${c}</option>`).join('');
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td class="row-num">${wcdCount}</td><td class="field-label" style="padding:3px 8px;"><select style="width:100%;min-width:180px;background:transparent;border:none;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none;">${opts}</select></td><td class="type-cell">Category</td><td class="has-val" data-label="Row ${wcdCount} – No. of Customers"><input type="number" value="${ncust}" placeholder="" style="min-width:100px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Row ${wcdCount} – Elec. Wheeled"><input type="number" step="0.0001" value="${elec}" placeholder="" style="min-width:130px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Row ${wcdCount} – Wheeling Rate"><input type="number" step="0.0001" value="${rate}" placeholder="" style="min-width:120px" oninput="clearErr(this)" onblur="validateField(this)"></td><td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  tr.innerHTML=`<td class="row-num">${wcdCount}</td><td class="field-label" style="padding:3px 8px;"><select style="width:100%;min-width:180px;background:transparent;border:none;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none;">${opts}</select></td><td class="type-cell">Category</td><td class="has-val" data-label="Row ${wcdCount} – No. of Customers"><input type="number" value="${ncust}" placeholder="0" style="min-width:100px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Row ${wcdCount} – Elec. Wheeled"><input type="number" step="0.0001" value="${elec}" placeholder="0.0" style="min-width:130px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Row ${wcdCount} – Wheeling Rate"><input type="number" step="0.0001" value="${rate}" placeholder="0.0" style="min-width:120px" oninput="clearErr(this)" onblur="validateField(this)"></td><td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
   tbody.appendChild(tr);
 }
 function buildDSDTable(){document.getElementById('dsd-body').innerHTML='';dsdCount=0;DSD_DEF.forEach(r=>addDSDRowData(r));}
@@ -1549,7 +1545,7 @@ function addDSDRowData([supplier,gen,cstart,cend,ccap,cenergy,_,purch,cost]){
   dsdCount++;
   const tbody=document.getElementById('dsd-body');
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td class="row-num">${dsdCount}</td><td class="field-label" style="padding:3px 8px;"><input type="text" value="${supplier}" placeholder="e.g. WESM" style="min-width:150px" oninput="clearErr(this)" onblur="validateField(this)" data-label="Supplier ${dsdCount} Name"></td><td class="type-cell">Supplier</td><td class="has-val"><select style="min-width:80px;background:transparent;border:none;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none;"><option ${gen==='Y'?'selected':''}>Y</option><option ${gen!=='Y'?'selected':''}>N</option></select></td><td class="has-val" data-label="Supplier ${dsdCount} – Contract Start"><input type="text" value="${cstart}" placeholder="yyyymmdd" maxlength="10" inputmode="numeric" style="min-width:120px" oninput="autoDate(this);clearErr(this)" onkeydown="dateKeydown(event)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Contract End"><input type="text" value="${cend}" placeholder="yyyymmdd" maxlength="10" inputmode="numeric" style="min-width:120px" oninput="autoDate(this);clearErr(this)" onkeydown="dateKeydown(event)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Contracted Capacity"><input type="number" step="0.0001" value="${ccap}" placeholder="" style="min-width:110px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Contracted Energy"><input type="number" step="0.0001" value="${cenergy}" placeholder="" style="min-width:120px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Purchased Electricity"><input type="number" step="0.0001" value="${purch}" placeholder="" style="min-width:140px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Generation Cost"><input type="number" step="0.0001" value="${cost}" placeholder="" style="min-width:130px" oninput="clearErr(this)" onblur="validateField(this)"></td><td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  tr.innerHTML=`<td class="row-num">${dsdCount}</td><td class="field-label" style="padding:3px 8px;"><input type="text" value="${supplier}" placeholder="e.g. WESM" style="min-width:150px" oninput="clearErr(this)" onblur="validateField(this)" data-label="Supplier ${dsdCount} Name"></td><td class="type-cell">Supplier</td><td class="has-val"><select style="min-width:80px;background:transparent;border:none;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none;"><option ${gen==='Y'?'selected':''}>Y</option><option ${gen!=='Y'?'selected':''}>N</option></select></td><td class="has-val" data-label="Supplier ${dsdCount} – Contract Start"><input type="text" value="${cstart}" placeholder="yyyymmdd" maxlength="10" inputmode="numeric" style="min-width:120px" oninput="autoDate(this);clearErr(this)" onkeydown="dateKeydown(event)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Contract End"><input type="text" value="${cend}" placeholder="yyyymmdd" maxlength="10" inputmode="numeric" style="min-width:120px" oninput="autoDate(this);clearErr(this)" onkeydown="dateKeydown(event)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Contracted Capacity"><input type="number" step="0.0001" value="${ccap}" placeholder="0.0" style="min-width:110px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Contracted Energy"><input type="number" step="0.0001" value="${cenergy}" placeholder="0.0" style="min-width:120px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Purchased Electricity"><input type="number" step="0.0001" value="${purch}" placeholder="0.0" style="min-width:140px" oninput="clearErr(this)" onblur="validateField(this)"></td><td class="has-val" data-label="Supplier ${dsdCount} – Generation Cost"><input type="number" step="0.0001" value="${cost}" placeholder="0.0" style="min-width:130px" oninput="clearErr(this)" onblur="validateField(this)"></td><td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
   tbody.appendChild(tr);
 }
 
@@ -1593,7 +1589,6 @@ async function exportAll(){
 }
 
 buildURTable(); buildCSDTable(); buildWCDTable(); buildDSDTable();
-if(typeof currentRole!=='undefined'&&currentRole) applyRoleLockSections();
 
 // ── GOOGLE SHEETS INTEGRATION ──
 const GS_URL = 'https://script.google.com/macros/s/AKfycbyq_NJdZgtRFRH8vx_R_4goP8kkqUgL7Chh3fFYShNaEVbosePgl4Cls5D8c3lqNuiM9A/exec';
@@ -1665,8 +1660,26 @@ function collectPane(paneId) {
   if(paneId==='mor-dsd') return{_rows:collectDSDRows()};
   const pane=document.getElementById('pane-'+paneId); if(!pane) return {};
   const data={};
+
+  if(paneId==='mor-ur'){
+    // Save only editable (non-auto) UR cells keyed by __ur_ci_ri__
+    const tbody=document.getElementById('ur-body'); if(!tbody) return data;
+    tbody.querySelectorAll('td.has-val:not(.ur-auto)').forEach(td=>{
+      const inp=td.querySelector('input');
+      if(!inp||inp.readOnly) return;
+      const ci=td.dataset.col, ri=td.dataset.row;
+      if(ci!==undefined&&ri!==undefined) data[`__ur_${ci}_${ri}`]=inp.value;
+    });
+    return data;
+  }
+
   pane.querySelectorAll('input,select,textarea').forEach(el=>{ if(el.id) data[el.id]=el.value; });
-  let idx=0; pane.querySelectorAll('input:not([id]),select:not([id])').forEach(el=>{ data['__anon_'+idx++]=el.value; });
+  let idx=0;
+  pane.querySelectorAll('input:not([id]),select:not([id])').forEach(el=>{
+    const td=el.closest('td');
+    if(td?.classList.contains('ur-auto') || el.readOnly){ idx++; return; }
+    data['__anon_'+idx++]=el.value;
+  });
   return data;
 }
 function collectWCDRows(){ const rows=[]; document.getElementById('wcd-body').querySelectorAll('tr').forEach(tr=>{ const cat=tr.querySelector('select')?.value||'',inps=tr.querySelectorAll('input'); rows.push({cat,n:inps[0]?.value||'',elec:inps[1]?.value||'',rate:inps[2]?.value||''}); }); return rows; }
@@ -1677,9 +1690,31 @@ function restorePane(paneId,data) {
   if(paneId==='mor-wcd'&&Array.isArray(data._rows)){ document.getElementById('wcd-body').innerHTML='';wcdCount=0;data._rows.forEach(r=>addWCDRowData([r.cat,r.n,r.elec,r.rate]));return; }
   if(paneId==='mor-dsd'&&Array.isArray(data._rows)){ document.getElementById('dsd-body').innerHTML='';dsdCount=0;data._rows.forEach(r=>addDSDRowData([r.sup,r.gen,r.cstart,r.cend,r.ccap,r.cenergy,'',r.purch,r.cost]));return; }
   const pane=document.getElementById('pane-'+paneId); if(!pane) return;
-  Object.entries(data).forEach(([id,val])=>{ if(id.startsWith('__anon_')) return; const el=document.getElementById(id); if(el) el.value=val; });
+
+  if(paneId==='mor-ur'){
+    // Restore only editable (non-auto) UR cells by their data-col/data-row
+    // Use __ur_ci_ri__ keyed data if available, else skip
+    const tbody=document.getElementById('ur-body'); if(!tbody) return;
+    Object.entries(data).forEach(([k,val])=>{
+      if(!k.startsWith('__ur_')) return;
+      const parts=k.replace('__ur_','').split('_');
+      const ci=parseInt(parts[0]),ri=parseInt(parts[1]);
+      const td=tbody.querySelector(`td[data-col="${ci}"][data-row="${ri}"]`);
+      if(td&&!td.classList.contains('ur-auto')){ const inp=td.querySelector('input'); if(inp&&!inp.readOnly) inp.value=val; }
+    });
+    urInitAutoFill();
+    return;
+  }
+
+  Object.entries(data).forEach(([id,val])=>{ if(id.startsWith('__anon_')||id.startsWith('__ur_')) return; const el=document.getElementById(id); if(el) el.value=val; });
   const anonEntries=Object.entries(data).filter(([k])=>k.startsWith('__anon_'));
-  if(anonEntries.length){ const anons=pane.querySelectorAll('input:not([id]),select:not([id])'); anonEntries.forEach(([k,val])=>{ const idx=parseInt(k.replace('__anon_',''),10); if(anons[idx]) anons[idx].value=val; }); }
+  if(anonEntries.length){
+    const anons=Array.from(pane.querySelectorAll('input:not([id]),select:not([id])')).filter(inp=>{
+      const td=inp.closest('td');
+      return !td?.classList.contains('ur-auto') && !inp.readOnly;
+    });
+    anonEntries.forEach(([k,val])=>{ const idx=parseInt(k.replace('__anon_',''),10); if(anons[idx]) anons[idx].value=val; });
+  }
 }
 function saveAllSectionsLocal(periodKey) {
   try { const stored=JSON.parse(localStorage.getItem('depdms_formdata')||'{}'); if(!stored[periodKey]) stored[periodKey]={}; ['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd'].forEach(s=>{ stored[periodKey][s]=collectPane(s); }); localStorage.setItem('depdms_formdata',JSON.stringify(stored)); } catch(e) {}
@@ -1692,14 +1727,23 @@ async function saveFormDataGS(section) {
 async function loadFormDataGS() {
   const key=formDataKey();
   buildURTable(); buildCSDTable(); buildWCDTable(); buildDSDTable();
+
+  // Clear any stale old-format mor-ur data (old __anon_ indexed saves cause wrong cell fills)
+  try {
+    const stored=JSON.parse(localStorage.getItem('depdms_formdata')||'{}');
+    if(stored[key]?.['mor-ur']){
+      const urData=stored[key]['mor-ur'];
+      const hasOldFormat=Object.keys(urData).some(k=>k.startsWith('__anon_'));
+      if(hasOldFormat){ delete stored[key]['mor-ur']; localStorage.setItem('depdms_formdata',JSON.stringify(stored)); }
+    }
+  } catch(e) {}
   if(GS_URL){
     setSyncStatus('syncing');
     const res=await gsCall('getFormData',{key});
     if(res===null){ setSyncStatus('error'); }
     else if(res?.ok){
       setSyncStatus('ok');
-      if(res.data&&Object.keys(res.data).length>0){ ['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd'].forEach(s=>{if(res.data[s]) restorePane(s,res.data[s]);});
-      applyRoleLockSections();}
+      if(res.data&&Object.keys(res.data).length>0){ ['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd'].forEach(s=>{if(res.data[s]) restorePane(s,res.data[s]);});}
       else{ try{const stored=JSON.parse(localStorage.getItem('depdms_formdata')||'{}');const pd=stored[key];if(pd){ ['profile','mor-ur','mor-wcd','mor-dtd','mor-csd','mor-dsd'].forEach(s=>{if(pd[s]) restorePane(s,pd[s]);});}}catch(e){} }
       return;
     }else{ setSyncStatus('error'); }
@@ -1827,7 +1871,7 @@ async function doChangePassword(){const oldPw=document.getElementById('cpw-old')
 // ── USER MANAGEMENT ──
 function getAllUsers(){const signups=getSignups(),signupMap={};signups.forEach(u=>signupMap[u.username]=u);const builtIn=Object.keys(USER_DB).filter(k=>!signupMap[k]).map(k=>({username:k,name:USER_DB[k].name,dept:USER_DB[k].dept,role:USER_DB[k].role,password:BUILTIN_PW[k]||'(built-in)',source:'built-in'}));const signedUp=signups.map(u=>({username:u.username,name:u.name,dept:u.dept,role:u.role,password:u.password,email:u.email||'',source:u.source||'signup'}));return[...builtIn,...signedUp];}
 function renderUserTable(){const tbody=document.getElementById('uman-tbody');if(!tbody)return;tbody.innerHTML='<tr><td colspan="8" class="log-empty" style="color:var(--accent4);">⟳ Loading users…</td></tr>';_renderUserTableFromGS();}
-async function _renderUserTableFromGS(){const tbody=document.getElementById('uman-tbody');if(!tbody)return;if(GS_URL){const res=await gsCall('getSignups');if(res?.ok&&Array.isArray(res.data)){localStorage.setItem('depdms_signups',JSON.stringify(res.data));applySignupsToRuntime(res.data);}}const search=(document.getElementById('uman-search')?.value||'').toLowerCase();let users=getAllUsers();if(search)users=users.filter(u=>[u.username,u.name,u.dept,u.role].some(v=>(v||'').toLowerCase().includes(search)));if(users.length===0){tbody.innerHTML='<tr><td colspan="8" class="log-empty">No users found.</td></tr>';return;}const signupMap=Object.fromEntries(getSignups().map(u=>[u.username,u]));const signupMap=Object.fromEntries(getSignups().map(u=>[u.username,u]));tbody.innerHTML=users.map((u,i)=>{const safePw=escHtml(u.password||''),roleLabel=(ROLE_CONFIG[u.role]?.label)||u.role,sourceBadge=u.source==='signup'?'<span class="uman-source-badge signed-up">Signed Up</span>':'<span class="uman-source-badge built-in">Built-in</span>';const _isDeletable=signupMap.hasOwnProperty(u.username)||u.source==='signup';const deleteBtn=_isDeletable?'<button class="uman-delete-btn" onclick="deleteSignupUser(\''+escHtml(u.username)+'\')">🗑 Delete</button>':'<span style="color:var(--muted);font-size:10px">—</span>';return['<tr>','<td style="color:var(--muted);font-size:11px;">'+(i+1)+'</td>','<td style="font-family:monospace;font-size:12px;font-weight:600;">'+escHtml(u.username)+'</td>','<td>'+escHtml(u.name)+'</td>','<td style="font-size:11px;color:var(--muted);">'+escHtml(u.dept)+'</td>','<td style="font-size:11px;">'+escHtml(roleLabel)+'</td>','<td class="uman-pw-cell"><span class="uman-pw-mask" id="pw-mask-'+i+'" onclick="revealPw('+i+')" title="Click to reveal">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</span><span class="uman-pw-reveal" id="pw-rev-'+i+'" style="display:none;">'+safePw+'</span><button class="eye" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;margin-left:4px;" onclick="revealPw('+i+')" title="Show/hide">&#128065;</button></td>','<td>'+sourceBadge+'</td>','<td>'+deleteBtn+'</td>','</tr>'].join('');}).join('');}
+async function _renderUserTableFromGS(){const tbody=document.getElementById('uman-tbody');if(!tbody)return;if(GS_URL){const res=await gsCall('getSignups');if(res?.ok&&Array.isArray(res.data)){localStorage.setItem('depdms_signups',JSON.stringify(res.data));applySignupsToRuntime(res.data);}}const search=(document.getElementById('uman-search')?.value||'').toLowerCase();let users=getAllUsers();if(search)users=users.filter(u=>[u.username,u.name,u.dept,u.role].some(v=>(v||'').toLowerCase().includes(search)));if(users.length===0){tbody.innerHTML='<tr><td colspan="8" class="log-empty">No users found.</td></tr>';return;}const signupMap=Object.fromEntries(getSignups().map(u=>[u.username,u]));tbody.innerHTML=users.map((u,i)=>{const safePw=escHtml(u.password||''),roleLabel=(ROLE_CONFIG[u.role]?.label)||u.role,sourceBadge=u.source==='signup'?'<span class="uman-source-badge signed-up">Signed Up</span>':'<span class="uman-source-badge built-in">Built-in</span>';const _isDeletable=signupMap.hasOwnProperty(u.username)||u.source==='signup';const deleteBtn=_isDeletable?'<button class="uman-delete-btn" onclick="deleteSignupUser(\''+escHtml(u.username)+'\')">🗑 Delete</button>':'<span style="color:var(--muted);font-size:10px">—</span>';return['<tr>','<td style="color:var(--muted);font-size:11px;">'+(i+1)+'</td>','<td style="font-family:monospace;font-size:12px;font-weight:600;">'+escHtml(u.username)+'</td>','<td>'+escHtml(u.name)+'</td>','<td style="font-size:11px;color:var(--muted);">'+escHtml(u.dept)+'</td>','<td style="font-size:11px;">'+escHtml(roleLabel)+'</td>','<td class="uman-pw-cell"><span class="uman-pw-mask" id="pw-mask-'+i+'" onclick="revealPw('+i+')" title="Click to reveal">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</span><span class="uman-pw-reveal" id="pw-rev-'+i+'" style="display:none;">'+safePw+'</span><button class="eye" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;margin-left:4px;" onclick="revealPw('+i+')" title="Show/hide">&#128065;</button></td>','<td>'+sourceBadge+'</td>','<td>'+deleteBtn+'</td>','</tr>'].join('');}).join('');}
 function revealPw(idx){const mask=document.getElementById('pw-mask-'+idx),rev=document.getElementById('pw-rev-'+idx);if(!mask||!rev)return;const showing=rev.style.display!=='none';mask.style.display=showing?'':'none';rev.style.display=showing?'none':'';}
 function deleteSignupUser(username){if(!confirm('Delete signed-up user "'+username+'"? This cannot be undone.'))return;const signups=getSignups().filter(u=>u.username!==username);saveSignups(signups);delete USER_DB[username];delete USER_LABELS[username];Object.keys(DEPT_USERS).forEach(k=>{DEPT_USERS[k]=DEPT_USERS[k].filter(u=>u!==username);});addLog('SAVE','Admin deleted signed-up user "'+username+'"');renderLog();renderUserTable();}
 
@@ -1838,34 +1882,6 @@ function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 function renderCsvTable(rows){if(!rows||rows.length===0)return'<div style="padding:14px;color:var(--muted);font-size:11px;">No data to preview.</div>';let html='<table class="csv-tbl">';rows.forEach((row,ri)=>{const isEof=row[0]==='EOF',isData=ri>=3&&!isEof,cls=isEof?'csv-eof-row':(isData?'csv-data-row':'');html+='<tr'+(cls?' class="'+cls+'"':'')+'>'; row.forEach(cell=>{const isEmpty=cell.trim()==='';html+='<td class="'+(isEmpty&&isData?'csv-empty':'')+'">'+( isEmpty&&isData?'—':escH(cell))+'</td>';});html+='</tr>';});html+='</table>';return html;}
 function renderCsvPreview(sectionId){const builder=CSV_BUILDERS[sectionId];if(!builder)return;const tableDiv=document.getElementById('csvtable-'+sectionId),infoEl=document.getElementById('csvinfo-'+sectionId);if(!tableDiv)return;tableDiv.innerHTML='<div style="padding:12px 14px;color:var(--accent4);font-size:11px;">⟳ Generating preview…</div>';setTimeout(()=>{try{const csvStr=builder(),rows=parseCsvToRows(csvStr),dataRows=Math.max(0,rows.length-4);tableDiv.innerHTML=renderCsvTable(rows);if(infoEl){const cols=rows[1]?rows[1].length:0;infoEl.textContent='📊 '+dataRows+' data row(s) · '+cols+' column(s) · '+getFilename(sectionId);}}catch(e){tableDiv.innerHTML='<div style="padding:12px 14px;color:var(--danger);font-size:11px;">⚠ Preview error: '+escH(String(e))+'</div>';}},30);}
 function toggleCsvPreview(sectionId){const body=document.getElementById('csvbody-'+sectionId),chevron=document.getElementById('csvtoggle-'+sectionId);if(!body)return;const isOpen=body.classList.toggle('open');if(chevron)chevron.classList.toggle('open',isOpen);if(isOpen)renderCsvPreview(sectionId);}
-
-// ── ROLE-BASED SECTION LOCKING ──
-function applyRoleLockSections() {
-  const isAdmin=currentRole==='admin';
-  function lockInputs(selector,editable){
-    document.querySelectorAll(selector).forEach(inp=>{
-      inp.readOnly=!editable;
-      inp.tabIndex=editable?0:-1;
-      inp.style.opacity=editable?'':'.6';
-      inp.style.cursor=editable?'':' default';
-    });
-  }
-  lockInputs('#ur-body td.has-val:not(.ur-auto) input', isAdmin||currentRole==='pt');
-  lockInputs('#wcd-body input',                         isAdmin||currentRole==='pt');
-  lockInputs('#dsd-body input',                         isAdmin||currentRole==='pt');
-  ['dtd_ml','dtd_cu','dtd_sl','dtd_tb','dtd_eb'].forEach(id=>{
-    const inp=document.getElementById(id); if(!inp) return;
-    inp.readOnly=!(isAdmin||currentRole==='tsd');
-    inp.tabIndex=(isAdmin||currentRole==='tsd')?0:-1;
-    inp.style.opacity=(isAdmin||currentRole==='tsd')?'':'.6';
-    inp.style.cursor=(isAdmin||currentRole==='tsd')?'':' default';
-  });
-  if(isAdmin){
-    document.querySelectorAll('#csd-body input').forEach(inp=>{
-      inp.readOnly=false; inp.tabIndex=0; inp.style.opacity=''; inp.style.cursor='';
-    });
-  }
-}
 </script>
 </body>
 </html>
