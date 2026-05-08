@@ -928,14 +928,11 @@ function dateKeydown(e) {
 
 // ── AUTH SYSTEM ──
 const USER_DB = {
-  'admin':    { name:'System Administrator',  dept:'Administration',          deptKey:'admin',         role:'admin',   pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
-  'finance1': { name:'Finance User',          dept:'Finance Department',       deptKey:'finance',       role:'finance', pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
-  'tsd1':     { name:'TSD User',              dept:'Technical Services Dept.', deptKey:'tsd',           role:'tsd',     pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
-  'pt1':      { name:'Power Trading User',    dept:'Power Trading Dept.',      deptKey:'power-trading', role:'pt',      pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
+  'admin': { name:'System Administrator', dept:'Administration', deptKey:'admin', role:'admin', pwHash:'421aac374dc3e405bb9289bdedf0127de6e25c432a8ddf2711def50a31c88819' },
 };
-const BUILTIN_PW = { 'admin':'zameco2025', 'finance1':'zameco2025', 'tsd1':'zameco2025', 'pt1':'zameco2025' };
-const DEPT_USERS = { 'finance':['finance1'], 'tsd':['tsd1'], 'power-trading':['pt1'], 'admin':['admin'] };
-const USER_LABELS = { 'admin':'System Administrator', 'finance1':'Finance User', 'tsd1':'TSD User', 'pt1':'Power Trading User' };
+const BUILTIN_PW = { 'admin':'zameco2025' };
+const DEPT_USERS = { 'finance':[], 'tsd':[], 'power-trading':[], 'admin':['admin'] };
+const USER_LABELS = { 'admin':'System Administrator' };
 const DEPT_HINTS = {
   'finance':       '<strong>Finance Dept.</strong> — Select an account and use your assigned password.',
   'tsd':           '<strong>Technical Services Dept.</strong> — Manages DU Technical Data (DTD) forms.',
