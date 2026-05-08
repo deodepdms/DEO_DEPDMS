@@ -608,7 +608,7 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
         <div class="section-desc">Rate charges per customer type. Values in PhP/kWh (up to 4 decimal places).</div>
       </div>
       <div class="grid-wrap">
-        <div class="grid-header-bar"><span>Unbundled Rate Data · 7 Customer Types × 29 Rate Columns</span><span style="color:var(--accent)">32 Columns</span></div>
+        <div class="grid-header-bar"><span>Unbundled Rate Data · 7 Customer Types × 32 Rate Columns</span><span style="color:var(--accent)">35 Columns</span></div>
         <div class="grid-scroll">
           <table class="xls" id="ur-table">
             <thead>
@@ -620,7 +620,8 @@ input[type=text].small:focus,select.small:focus{border-color:var(--accent);}
                 <th>16–Met Sys</th><th>17–Met Retail</th><th>18–RFSC</th><th>19–Lifeline</th>
                 <th>20–SC Sub</th><th>21–UCME-SPUG</th><th>22–UCME-REDCI</th><th>23–UC-EC</th>
                 <th>24–UC-SCC</th><th>25–UC-SD</th><th>26–FIT-All</th><th>27–Franchise</th>
-                <th>28–RealProp</th><th>29–Gen VAT</th><th>30–Tx VAT</th><th>31–Dist VAT</th><th>32–Other VAT</th>
+                <th>28–RealProp</th><th>29–Gen VAT</th><th>30–Tx VAT</th><th>31–Dist VAT</th>
+                <th>32–Distribution VAT</th><th>33–Other VAT</th><th>34–REC Rate</th><th>35–GEA All</th>
               </tr>
             </thead>
             <tbody id="ur-body"></tbody>
@@ -1184,13 +1185,13 @@ function exportLogCSV() {
 
 // ── TABLE DEFAULT DATA ──
 const UR_DEF={
-  'Residential-Lifeline-Grid': [0.6366,0,0,0,1.1892,0,0.2669,0.5143,0,0,0.5828,0,0.3669,5,0.2508,0,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1369,0.0381],
-  'Residential-Non-Lifeline':  [0.6366,0,0,0,1.1892,0,0.2669,0.5143,0,0,0.5828,0,0.3669,5,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1369,0.0381],
-  'Commercial-LV':             [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1369,0.0381],
-  'Industrial-HV':             [0.6366,0,0,0,0,356.98,0.2669,0,190.03,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1369,0.0381],
-  'Public-Building-LV':        [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1369,0.0381],
-  'Streetlights-LV':           [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1369,0.0381],
-  'Special-Lighting':          [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1369,0.0381],
+  'Residential-Lifeline-Grid': [0.6366,0,0,0,1.1892,0,0.2669,0.5143,0,0,0.5828,0,0.3669,5,0.2508,0,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371],
+  'Residential-Non-Lifeline':  [0.6366,0,0,0,1.1892,0,0.2669,0.5143,0,0,0.5828,0,0.3669,5,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371],
+  'Commercial-LV':             [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371],
+  'Industrial-HV':             [0.6366,0,0,0,0,356.98,0.2669,0,190.03,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371],
+  'Public-Building-LV':        [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371],
+  'Streetlights-LV':           [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371],
+  'Special-Lighting':          [0.6366,0,0,0,1.2793,0,0.2669,0.5134,0,0,0,41.61,0,31.19,0.2508,0.0125,0,0.1805,0.0017,0,0,0.0428,0.0838,0,0,0.2811,0.0886,0.1359,0.1359,0,0.0072,0.0371],
 };
 const CSD_DEF={ 'Residential-Lifeline-Grid':[0,0,0,0],'Residential-Non-Lifeline':[0,0,0,0],'Commercial-LV':[0,0,0,0],'Industrial-HV':[0,0,0,0],'Public-Building-LV':[0,0,0,0],'Streetlights-LV':[0,0,0,0],'Special-Lighting':[0,0,0,0] };
 const DSD_DEF=[['Net-Metering','N','','','','','','',''],['WESM','N','','','','','','',''],['SPARC','N','','','','','','','']];
@@ -1340,91 +1341,79 @@ function buildURTable() {
   const tbody = document.getElementById('ur-body');
   tbody.innerHTML = '';
 
-  // Row indices: 0=Res-LL-Grid, 1=Res-NonLL, 2=Com-LV, 3=Ind-HV, 4=Pub-LV, 5=SL-LV, 6=Spec-Light
-  // Col indices (0-based from col4): 0=Gen, 1=GRAM, 2=ICERA, 3=PwrAct, 4=TxSys, 5=TxDem,
-  //   6=SysLoss, 7=DistSys, 8=DistDem, 9=TrueUp, 10=SupSys, 11=SupRetail,
-  //   12=MetSys, 13=MetRetail, 14=RFSC, 15=Lifeline, 16=SC, 17=UCME-SPUG, 18=UCME-REDCI,
-  //   19=UC-EC, 20=UC-SCC, 21=UC-SD, 22=FIT-All, 23=Franchise, 24=RealProp,
-  //   25=GenVAT, 26=TxVAT, 27=DistVAT, 28=OtherVAT
-
   CT.forEach((ct, ri) => {
-    const vals = UR_DEF[ct] || Array(29).fill('');
+    const vals = UR_DEF[ct] || Array(31).fill(0);
     const tr = document.createElement('tr');
-
     let cells = '';
+
     vals.forEach((v, ci) => {
-      // Determine if this cell is a "trigger" input or an "auto-filled" (readonly) cell
       let isAuto = false;
       let triggerAttr = '';
 
-      // Col 4 (ci=0): Gen Charges – only row 0 is editable; rows 1-6 auto-copy from row 0
       if (ci === 0) {
-        if (ri > 0) { isAuto = true; }
-        else { triggerAttr = `oninput="urAutoFill(this,0)" `; }
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,0)" `;
+        else isAuto = true;
       }
-      // Cols 5-7 (ci=1,2,3): always 0, readonly
-      else if (ci >= 1 && ci <= 3) {
-        isAuto = true; v = 0;
-      }
-      // Col 8 (ci=4): TxSys – row0 editable→copies to row1; row2 editable→copies to rows 4,5,6+; row3 always 0
+      else if (ci >= 1 && ci <= 3) { isAuto = true; v = 0; }
       else if (ci === 4) {
-        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,4)" `; }
-        else if (ri === 1) { isAuto = true; }
-        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,4)" `; }
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,4)" `;
+        else if (ri === 1) isAuto = true;
+        else if (ri === 2) triggerAttr = `oninput="urAutoFill(this,4)" `;
         else if (ri === 3) { isAuto = true; v = 0; }
-        else { isAuto = true; } // rows 4,5,6 auto from row 2
+        else isAuto = true;
       }
-      // Col 9 (ci=5): TxDem – rows 0,1,2, 4,5,6 = 0; only row 3 editable
       else if (ci === 5) {
-        if (ri === 3) { triggerAttr = ``; }
-        else { isAuto = true; v = 0; }
+        if (ri !== 3) { isAuto = true; v = 0; }
       }
-      // Col 10 (ci=6): SysLoss – row 0 editable → all rows same value
       else if (ci === 6) {
-        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,6)" `; }
-        else { isAuto = true; }
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,6)" `;
+        else isAuto = true;
       }
-      // Col 11 (ci=7): DistSys – same logic as Col 8
       else if (ci === 7) {
-        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,7)" `; }
-        else if (ri === 1) { isAuto = true; }
-        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,7)" `; }
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,7)" `;
+        else if (ri === 1) isAuto = true;
+        else if (ri === 2) triggerAttr = `oninput="urAutoFill(this,7)" `;
         else if (ri === 3) { isAuto = true; v = 0; }
-        else { isAuto = true; }
+        else isAuto = true;
       }
-      // Col 12 (ci=8): DistDem – same logic as Col 9
-      else if (ci === 8) {
-        if (ri === 3) { triggerAttr = ``; }
-        else { isAuto = true; v = 0; }
-      }
-      // Col 13 (ci=9): TrueUp – all 0, all readonly
-      else if (ci === 9) {
-        isAuto = true; v = 0;
-      }
-      // Col 14 (ci=10): SupSys – rows 0 & 1 same (row0 editable); rows 2+ = 0
+      else if (ci === 8) { if (ri !== 3) { isAuto = true; v = 0; } }
+      else if (ci === 9) { isAuto = true; v = 0; }
       else if (ci === 10) {
-        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,10)" `; }
-        else if (ri === 1) { isAuto = true; }
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,10)" `;
+        else if (ri === 1) isAuto = true;
         else { isAuto = true; v = 0; }
       }
-      // Col 15 (ci=11): SupRetail – rows 0 & 1 = 0; rows 2-6 same (row2 editable)
       else if (ci === 11) {
         if (ri <= 1) { isAuto = true; v = 0; }
-        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,11)" `; }
-        else { isAuto = true; }
+        else if (ri === 2) triggerAttr = `oninput="urAutoFill(this,11)" `;
+        else isAuto = true;
       }
-      // Col 16 (ci=12): MetSys – same as Col 14
       else if (ci === 12) {
-        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,12)" `; }
-        else if (ri === 1) { isAuto = true; }
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,12)" `;
+        else if (ri === 1) isAuto = true;
         else { isAuto = true; v = 0; }
       }
-      // Col 17 (ci=13): MetRetail – rows 0 & 1 same (row0 editable); rows 2-6 same (row2 editable)
       else if (ci === 13) {
-        if (ri === 0) { triggerAttr = `oninput="urAutoFill(this,13,0)" `; }
-        else if (ri === 1) { isAuto = true; }
-        else if (ri === 2) { triggerAttr = `oninput="urAutoFill(this,13,2)" `; }
-        else { isAuto = true; }
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,13,0)" `;
+        else if (ri === 1) isAuto = true;
+        else if (ri === 2) triggerAttr = `oninput="urAutoFill(this,13,2)" `;
+        else isAuto = true;
+      }
+      else if (ci === 14) {
+        // Col18 RFSC: row0 → rows1-6 all same
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,14)" `;
+        else isAuto = true;
+      }
+      else if (ci === 15) {
+        // Col19 Lifeline: row0=0 auto; row1 trigger → rows2-6 auto
+        if (ri === 0) { isAuto = true; v = 0; }
+        else if (ri === 1) triggerAttr = `oninput="urAutoFill(this,15)" `;
+        else isAuto = true;
+      }
+      else if (ci >= 16 && ci <= 30) {
+        // Cols20-34: row0 trigger → rows1-6 all same
+        if (ri === 0) triggerAttr = `oninput="urAutoFill(this,${ci})" `;
+        else isAuto = true;
       }
 
       if (isAuto) {
@@ -1442,113 +1431,62 @@ function buildURTable() {
 
   const eof = document.createElement('tr');
   eof.className = 'eof';
-  eof.innerHTML = `<td class="row-num">—</td><td class="field-label">EOF</td><td colspan="32"></td>`;
+  eof.innerHTML = `<td class="row-num">—</td><td class="field-label">EOF</td><td colspan="34"></td>`;
   tbody.appendChild(eof);
-
-  // Initialize auto-fill from existing UR_DEF values
   urInitAutoFill();
 }
 
 function urInitAutoFill() {
-  // Trigger each auto-fill rule using the default values so readonly cells are correct on load
   const tbody = document.getElementById('ur-body');
   if (!tbody) return;
   const rows = tbody.querySelectorAll('tr:not(.eof)');
+  function getVal(ri,ci){ return rows[ri]?.querySelector(`td[data-col="${ci}"] input`)?.value||0; }
+  function setAuto(ri,ci,val){ const td=rows[ri]?.querySelector(`td[data-col="${ci}"]`); if(td){const inp=td.querySelector('input');if(inp)inp.value=val;} }
 
-  function getInput(ri, ci) {
-    return rows[ri]?.querySelectorAll('td.has-val input')[ci] || null;
-  }
-  function setAuto(ri, ci, val) {
-    const td = rows[ri]?.querySelector(`td[data-col="${ci}"]`);
-    if (td) { const inp = td.querySelector('input'); if (inp) inp.value = val; }
-  }
-
-  // Col 0 (Gen): rows 1-6 = row 0 value
-  const gen0 = getInput(0, 0)?.value || 0;
-  for (let r = 1; r <= 6; r++) setAuto(r, 0, gen0);
-
-  // Col 4 (TxSys): row1 = row0; rows4,5,6 = row2
-  const tx0 = getInput(0, 4)?.value || 0;
-  const tx2 = getInput(2, 4)?.value || 0;
-  setAuto(1, 4, tx0); setAuto(3, 4, 0);
-  for (let r = 4; r <= 6; r++) setAuto(r, 4, tx2);
-
-  // Col 6 (SysLoss): rows 1-6 = row 0
-  const sl0 = getInput(0, 6)?.value || 0;
-  for (let r = 1; r <= 6; r++) setAuto(r, 6, sl0);
-
-  // Col 7 (DistSys): same as TxSys
-  const ds0 = getInput(0, 7)?.value || 0;
-  const ds2 = getInput(2, 7)?.value || 0;
-  setAuto(1, 7, ds0); setAuto(3, 7, 0);
-  for (let r = 4; r <= 6; r++) setAuto(r, 7, ds2);
-
-  // Col 10 (SupSys): row1 = row0; rows 2-6 = 0
-  const ss0 = getInput(0, 10)?.value || 0;
-  setAuto(1, 10, ss0);
-
-  // Col 11 (SupRetail): rows 3-6 = row2
-  const sr2 = getInput(2, 11)?.value || 0;
-  for (let r = 3; r <= 6; r++) setAuto(r, 11, sr2);
-
-  // Col 12 (MetSys): row1 = row0; rows 2-6 = 0
-  const ms0 = getInput(0, 12)?.value || 0;
-  setAuto(1, 12, ms0);
-
-  // Col 13 (MetRetail): row1 = row0; rows 3-6 = row2
-  const mr0 = getInput(0, 13)?.value || 0;
-  const mr2 = getInput(2, 13)?.value || 0;
-  setAuto(1, 13, mr0);
-  for (let r = 3; r <= 6; r++) setAuto(r, 13, mr2);
+  const g=getVal(0,0); for(let r=1;r<=6;r++) setAuto(r,0,g);
+  setAuto(1,4,getVal(0,4)); setAuto(3,4,0);
+  const tx2=getVal(2,4); for(let r=4;r<=6;r++) setAuto(r,4,tx2);
+  const sl=getVal(0,6); for(let r=1;r<=6;r++) setAuto(r,6,sl);
+  setAuto(1,7,getVal(0,7)); setAuto(3,7,0);
+  const ds2=getVal(2,7); for(let r=4;r<=6;r++) setAuto(r,7,ds2);
+  setAuto(1,10,getVal(0,10));
+  const sr=getVal(2,11); for(let r=3;r<=6;r++) setAuto(r,11,sr);
+  setAuto(1,12,getVal(0,12));
+  setAuto(1,13,getVal(0,13));
+  const mr=getVal(2,13); for(let r=3;r<=6;r++) setAuto(r,13,mr);
+  const rfsc=getVal(0,14); for(let r=1;r<=6;r++) setAuto(r,14,rfsc);
+  setAuto(0,15,0); const ll=getVal(1,15); for(let r=2;r<=6;r++) setAuto(r,15,ll);
+  for(let ci=16;ci<=30;ci++){ const val=getVal(0,ci); for(let r=1;r<=6;r++) setAuto(r,ci,val); }
 }
 
 function urAutoFill(inp, ci, groupStart) {
   const tbody = document.getElementById('ur-body');
   const rows = tbody.querySelectorAll('tr:not(.eof)');
   const val = inp.value;
+  function setAuto(ri,c,v){ const td=rows[ri]?.querySelector(`td[data-col="${c}"]`); if(td){const i=td.querySelector('input');if(i)i.value=v;} }
 
-  function setAuto(ri, c, v) {
-    const td = rows[ri]?.querySelector(`td[data-col="${c}"]`);
-    if (td) { const i = td.querySelector('input'); if (i) i.value = v; }
+  if (ci===0) { for(let r=1;r<=6;r++) setAuto(r,0,val); }
+  else if (ci===4) {
+    const ri=parseInt(inp.closest('td').dataset.row);
+    if(ri===0) setAuto(1,4,val);
+    else if(ri===2) for(let r=4;r<=6;r++) setAuto(r,4,val);
   }
-
-  if (ci === 0) {
-    // Col 4 (Gen): fill rows 1-6
-    for (let r = 1; r <= 6; r++) setAuto(r, 0, val);
+  else if (ci===6) { for(let r=1;r<=6;r++) setAuto(r,6,val); }
+  else if (ci===7) {
+    const ri=parseInt(inp.closest('td').dataset.row);
+    if(ri===0) setAuto(1,7,val);
+    else if(ri===2) for(let r=4;r<=6;r++) setAuto(r,7,val);
   }
-  else if (ci === 4) {
-    // Col 8 (TxSys): editing row0 → copy to row1; editing row2 → copy to rows 4,5,6
-    const ri = parseInt(inp.closest('td').dataset.row);
-    if (ri === 0) { setAuto(1, 4, val); }
-    else if (ri === 2) { for (let r = 4; r <= 6; r++) setAuto(r, 4, val); }
+  else if (ci===10) { setAuto(1,10,val); }
+  else if (ci===11) { for(let r=3;r<=6;r++) setAuto(r,11,val); }
+  else if (ci===12) { setAuto(1,12,val); }
+  else if (ci===13) {
+    if(groupStart===0) setAuto(1,13,val);
+    else if(groupStart===2) for(let r=3;r<=6;r++) setAuto(r,13,val);
   }
-  else if (ci === 6) {
-    // Col 10 (SysLoss): fill rows 1-6
-    for (let r = 1; r <= 6; r++) setAuto(r, 6, val);
-  }
-  else if (ci === 7) {
-    // Col 11 (DistSys): same as TxSys
-    const ri = parseInt(inp.closest('td').dataset.row);
-    if (ri === 0) { setAuto(1, 7, val); }
-    else if (ri === 2) { for (let r = 4; r <= 6; r++) setAuto(r, 7, val); }
-  }
-  else if (ci === 10) {
-    // Col 14 (SupSys): row0 → row1
-    setAuto(1, 10, val);
-  }
-  else if (ci === 11) {
-    // Col 15 (SupRetail): row2 → rows 3-6
-    for (let r = 3; r <= 6; r++) setAuto(r, 11, val);
-  }
-  else if (ci === 12) {
-    // Col 16 (MetSys): row0 → row1
-    setAuto(1, 12, val);
-  }
-  else if (ci === 13) {
-    // Col 17 (MetRetail): row0 → row1; row2 → rows 3-6
-    if (groupStart === 0) { setAuto(1, 13, val); }
-    else if (groupStart === 2) { for (let r = 3; r <= 6; r++) setAuto(r, 13, val); }
-  }
+  else if (ci===14) { for(let r=1;r<=6;r++) setAuto(r,14,val); }
+  else if (ci===15) { for(let r=2;r<=6;r++) setAuto(r,15,val); }
+  else if (ci>=16 && ci<=30) { for(let r=1;r<=6;r++) setAuto(r,ci,val); }
 }
 function buildCSDTable() {
   const tbody=document.getElementById('csd-body');tbody.innerHTML='';
@@ -1590,7 +1528,7 @@ function makeCSV(rows){return rows.map(r=>r.map(csvEsc).join(',')).join('\r\n');
 function getP(){return{id:v('p_id'),region:v('p_region'),company:v('p_company'),head:v('p_head'),pres:v('p_pres'),email:v('p_email'),web:v('p_web'),tel:v('p_tel'),addr:v('p_addr'),emp:v('p_emp'),conemp:v('p_conemp'),circ:v('p_circ'),density:v('p_density'),saidi:v('p_saidi'),saifi:v('p_saifi'),collect:v('p_collect'),load:v('p_load'),subs:v('p_subs'),kva:v('p_kva')};}
 
 function buildProfileCSV(){const p=getP(),m=getMonth(),y=getYear(),d=getDay();const hdr=`DU General Information (DU-PROFILE) as of <${d}> <${m}> <${y}>`;const cols=['1 - Participant ID','2 - Region','3 - Company Name','4 - Head of the Company','5 - Board President','6 - Official Email','7 - Website','8 - Telephone Number','9 - Physical Address','10 - Number of Employees','11 - Connection/ Employees','12 - Circuit km of Lines','13 - Consumer Density per Circuit km of lines','14 - SAIDI','15 - SAIFI','16 - Collection Efficiency (%)','17 - Load Factor (%)','18 - No. of Substations','19 - Total Capacity (kVA)'];const types=['Alphanumeric','Alphanumeric','Alphanumeric','Alphanumeric','Alphanumeric','Alphanumeric','Alphanumeric','Alphanumeric','Alphanumeric','Integers','Integers','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Integers','Numeric, up to 4 decimal places'];const blank=Array(19).fill('');blank[0]=hdr;return makeCSV([blank,cols,types,[p.id,p.region,p.company,p.head,p.pres,p.email,p.web,p.tel,p.addr,p.emp,p.conemp,p.circ,p.density,p.saidi,p.saifi,p.collect,p.load,p.subs,p.kva],['EOF',...Array(18).fill('')]]);}
-function buildURCSV(){const p=getP(),m=getMonth(),y=getYear();const hdr=`Monthly Operations Report - Unbundled Rates (MOR-UR) for <${m}> <${y}>`;const cols=['1 - Participant ID','2 - Region','3 - Customer Type','4 - Generation Charges','5 - GRAM-DAA','6 - ICERA-DAA','7 - Power Act Reduction','8 - Transmission System Charge','9 - Transmission Demand Charge','10 - System Loss Charge','11 - Distribution System Charge','12 - Distribution Demand Charge','13 - True-Up Adjustments','14 - Supply System Charge','15 - Supply Retail Customer Charge','16 - Metering System Charge','17 - Metering Retail Customer Charge','18 - RFSC','19 - Lifeline Subsidy','20 - Senior Citizen Subsidy','21 - UCME  - NPC SPUG','22 - UCME - REDCI','23 - UC - EC','24 - UC - SCC','25 - UC - SD','26 - FIT - All','27 - Franchise Tax','28 - Real Property Tax','29 - Generation VAT','30 - Transmission VAT','31 - Distribution VAT','32 - Other VAT'];const types=Array(32).fill('Numeric, up to 4 decimal places');types[0]='Alphanumeric';types[1]='Alphanumeric';types[2]='Alphanumeric';const blank=Array(32).fill('');blank[0]=hdr;const rows=[blank,cols,types];document.getElementById('ur-body').querySelectorAll('tr:not(.eof)').forEach((tr,i)=>{const vals=[p.id,p.region,CT[i]];tr.querySelectorAll('input').forEach(inp=>vals.push(inp.value));rows.push(vals);});rows.push(['EOF',...Array(31).fill('')]);return makeCSV(rows);}
+function buildURCSV(){const p=getP(),m=getMonth(),y=getYear();const hdr=`Monthly Operations Report - Unbundled Rates (MOR-UR) for <${m}> <${y}>`;const cols=['1 - Participant ID','2 - Region','3 - Customer Type','4 - Generation Charges','5 - GRAM-DAA','6 - ICERA-DAA','7 - Power Act Reduction','8 - Transmission System Charge','9 - Transmission Demand Charge','10 - System Loss Charge','11 - Distribution System Charge','12 - Distribution Demand Charge','13 - True-Up Adjustments','14 - Supply System Charge','15 - Supply Retail Customer Charge','16 - Metering System Charge','17 - Metering Retail Customer Charge','18 - RFSC','19 - Lifeline Subsidy','20 - Senior Citizen Subsidy','21 - UCME  - NPC SPUG','22 - UCME - REDCI','23 - UC - EC','24 - UC - SCC','25 - UC - SD','26 - FIT - All','27 - Franchise Tax','28 - Real Property Tax','29 - Generation VAT','30 - Transmission VAT','31 - Distribution VAT','32 - Distribution VAT','33 - Other VAT','34 - REC Rate','35 - GEA All'];const types=Array(35).fill('Numeric, up to 4 decimal places');types[0]='Alphanumeric';types[1]='Alphanumeric';types[2]='Alphanumeric';const blank=Array(35).fill('');blank[0]=hdr;const rows=[blank,cols,types];document.getElementById('ur-body').querySelectorAll('tr:not(.eof)').forEach((tr,i)=>{const vals=[p.id,p.region,CT[i]];tr.querySelectorAll('input').forEach(inp=>vals.push(inp.value));rows.push(vals);});rows.push(['EOF',...Array(34).fill('')]);return makeCSV(rows);}
 function buildWCDCSV(){const p=getP(),m=getMonth(),y=getYear();const hdr=`Monthly Operations Report - Wheeling Customer Data (MOR-WCD) for <${m}> <${y}>`;const cols=['1 - Participant ID','2 - Region','3 - Customer Category','4 - No. of Customers','5 - Total Electricity Wheeled','6 - Wheeling Rate'];const types=['Alphanumeric','Alphanumeric','Alphanumeric','Integers','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places'];const blank=Array(6).fill('');blank[0]=hdr;const rows=[blank,cols,types];document.getElementById('wcd-body').querySelectorAll('tr').forEach(tr=>{const cat=tr.querySelector('select')?.value||'';const inps=tr.querySelectorAll('input');rows.push([p.id,p.region,cat,inps[0]?.value||'',inps[1]?.value||'',inps[2]?.value||'']);});rows.push(['EOF',...Array(5).fill('')]);return makeCSV(rows);}
 function buildDTDCSV(){const p=getP(),m=getMonth(),y=getYear();const hdr=`Monthly Operations Report - DU Technical Data (MOR-DTD) for <${m}> <${y}>`;const cols=['1 - Participant ID','2 - Region','3 - Maximum Load','4 - Company Use','5 - System Loss','6 - Total No. of Barangays','7 - Total Energized Barangays'];const types=['Alphanumeric','Alphanumeric','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Integers','Integers'];const blank=Array(7).fill('');blank[0]=hdr;return makeCSV([blank,cols,types,[p.id,p.region,v('dtd_ml'),v('dtd_cu'),v('dtd_sl'),v('dtd_tb'),v('dtd_eb')],['EOF',...Array(6).fill('')]]);}
 function buildCSDCSV(){const p=getP(),m=getMonth(),y=getYear();const hdr=`Monthly Operations Report  Customer Sales Data (MOR-CSD) for <${m}> <${y}>`;const cols=['1 - Participant ID','2 - Region','3 - Customer Type','4 - No. of Customers','5 - Electricity Sales','6 - Effective Rate','7 - Capacity Allocation'];const types=['Alphanumeric','Alphanumeric','Alphanumeric','Integers','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places','Numeric, up to 4 decimal places'];const blank=Array(7).fill('');blank[0]=hdr;const rows=[blank,cols,types];document.getElementById('csd-body').querySelectorAll('tr:not(.eof)').forEach((tr,i)=>{const inps=tr.querySelectorAll('input');rows.push([p.id,p.region,CT[i],inps[0]?.value||'',inps[1]?.value||'',inps[2]?.value||'',inps[3]?.value||'']);});rows.push(['EOF',...Array(6).fill('')]);return makeCSV(rows);}
